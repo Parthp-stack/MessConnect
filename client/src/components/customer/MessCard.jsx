@@ -17,7 +17,7 @@ export const MessCard = ({ mess, onOpenDetails, onBookTrial, onSubscribe }) => {
       {/* Cover Image & Badges */}
       <div className="relative h-44 w-full bg-slate-900 overflow-hidden">
         <img
-          src={mess.coverImage || '/logo.png'}
+          src={mess.coverImage || '/logo.jpeg'}
           alt={mess.name}
           className="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300"
           loading="lazy"
@@ -72,7 +72,7 @@ export const MessCard = ({ mess, onOpenDetails, onBookTrial, onSubscribe }) => {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               <img
-                src={mess.logo || mess.coverImage || '/logo.png'}
+                src={mess.logo || mess.coverImage || '/logo.jpeg'}
                 alt=""
                 className="w-7 h-7 rounded-xl object-contain bg-black p-0.5 shrink-0 border border-slate-200"
               />

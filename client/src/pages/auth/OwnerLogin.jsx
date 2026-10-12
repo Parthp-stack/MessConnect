@@ -191,7 +191,7 @@ export const OwnerLogin = ({
         <div className="bg-gradient-to-br from-amber-600 via-orange-600 to-rose-700 p-7 text-white relative">
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src="/logo.jpeg"
               alt="MessConnect"
               className="w-12 h-12 rounded-2xl object-contain bg-black/40 p-1 backdrop-blur-xs shadow-inner"
             />

@@ -97,7 +97,7 @@ export const LandingPortal = ({
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src="/logo.jpeg"
               alt="MessConnect"
               className="w-9 h-9 rounded-2xl object-contain shadow-sm"
             />

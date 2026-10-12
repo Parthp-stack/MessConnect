@@ -28,7 +28,7 @@ export const MobileShell = ({
             className="flex items-center gap-2.5 cursor-pointer group select-none shrink-0"
           >
             <img
-              src="/logo.png"
+              src="/logo.jpeg"
               alt="MessConnect"
               className="w-8 h-8 rounded-xl object-contain shadow-sm group-hover:scale-105 transition"
             />

@@ -84,7 +84,7 @@ export const MessDetailsModal = ({
         {/* Header Image with Floating Action Buttons */}
         <div className="relative h-56 w-full bg-slate-900 shrink-0">
           <img
-            src={mess.coverImage || '/logo.png'}
+            src={mess.coverImage || '/logo.jpeg'}
             alt={mess.name}
             className="w-full h-full object-contain p-4"
           />
@@ -137,7 +137,7 @@ export const MessDetailsModal = ({
             </div>
             <div className="flex items-center gap-2.5">
               <img
-                src={mess.logo || mess.coverImage || '/logo.png'}
+                src={mess.logo || mess.coverImage || '/logo.jpeg'}
                 alt=""
                 className="w-8 h-8 rounded-xl object-contain bg-black p-0.5 shrink-0 border border-white/20"
               />

@@ -85,9 +85,11 @@ flask_server/
 # Local testing and scratch files
 scratch/
 txt
-*.jpeg
-*.jpg
-*.png
 test_*.js
 compare_express_flask.js
 MESSCONNECT_ANDROID_FEATURES_AND_PROMPT.txt
+/WhatsApp Image*.jpeg
+
+# Whitelist public web assets
+!client/public/**
+!client/src/assets/**

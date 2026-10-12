@@ -935,7 +935,7 @@ export const OwnerView = () => {
                   {/* Photo Preview */}
                   <div className="relative w-full sm:w-36 h-28 rounded-2xl bg-slate-900 overflow-hidden border border-slate-300 shrink-0 shadow-inner flex items-center justify-center group">
                     <img
-                      src={messCoverImage || '/logo.png'}
+                      src={messCoverImage || '/logo.jpeg'}
                       alt="Mess Cover Preview"
                       className="w-full h-full object-contain p-1.5"
                     />
@@ -962,7 +962,7 @@ export const OwnerView = () => {
                       <button
                         type="button"
                         onClick={() => {
-                          setMessCoverImage('/logo.png');
+                          setMessCoverImage('/logo.jpeg');
                           showToast('Reset photo to official MessConnect logo', 'info');
                         }}
                         className="px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition"
