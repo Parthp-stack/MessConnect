@@ -83,11 +83,13 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Serve client in production if built
-const clientDist = path.join(__dirname, '..', 'client', 'dist');
+const clientDist = path.resolve(__dirname, '..', 'client', 'dist');
 app.use(express.static(clientDist));
-app.use((req, res, next) => {
-  if (req.originalUrl.startsWith('/api/')) return next();
-  const indexHtml = path.join(clientDist, 'index.html');
+
+// SPA Fallback: serve index.html for all non-API GET routes to support client-side routing
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  const indexHtml = path.resolve(clientDist, 'index.html');
   if (fs.existsSync(indexHtml)) {
     return res.sendFile(indexHtml);
   }
