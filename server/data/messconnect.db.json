@@ -1,0 +1,1056 @@
+{
+  "users": [
+    {
+      "id": "user_admin_1",
+      "name": "Super Admin",
+      "email": "admin@messconnect.in",
+      "phone": null,
+      "password": "sha256$ee4283b2d49dfddf1e3fa9ed9b2a8a4d$0f3dcc43cf3b909ff5b4d79ed5939968c89eb461561d256d09cc04af2e969b9e",
+      "role": "ADMIN",
+      "avatar": null,
+      "college": null,
+      "location": null,
+      "diet": null,
+      "department": "Platform Administration",
+      "preferences": {},
+      "verificationStatus": null,
+      "verified": true,
+      "reviewNotes": null,
+      "documents": {},
+      "messId": null,
+      "messName": null,
+      "createdAt": null,
+      "updatedAt": "2026-10-12T09:53:34.000Z"
+    },
+    {
+      "id": "user_cust_1791819098546",
+      "name": "Aditya Patil",
+      "email": "aditya_student_1791819098543@test.com",
+      "phone": "9988417341",
+      "password": "Password@123",
+      "role": "CUSTOMER",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "college": "MITAOE",
+      "location": "Pune",
+      "diet": null,
+      "department": null,
+      "preferences": {
+        "diet": "Veg & Non-Veg",
+        "offers": true,
+        "reminderTime": "08:00",
+        "mealReminders": true,
+        "subscriptionAlerts": true
+      },
+      "verificationStatus": "APPROVED",
+      "verified": false,
+      "reviewNotes": null,
+      "documents": {},
+      "messId": null,
+      "messName": null,
+      "createdAt": "2026-10-12T15:31:38.546Z",
+      "updatedAt": "2026-10-12T10:26:46.000Z"
+    },
+    {
+      "id": "user_cust_1791819122448",
+      "name": "Aditya Patil",
+      "email": "aditya_student_1791819122443@test.com",
+      "phone": "9988536984",
+      "password": "Password@123",
+      "role": "CUSTOMER",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "college": "MITAOE",
+      "location": "Pune",
+      "diet": null,
+      "department": null,
+      "preferences": {
+        "diet": "Veg & Non-Veg",
+        "offers": true,
+        "reminderTime": "08:00",
+        "mealReminders": true,
+        "subscriptionAlerts": true
+      },
+      "verificationStatus": "APPROVED",
+      "verified": false,
+      "reviewNotes": null,
+      "documents": {},
+      "messId": null,
+      "messName": null,
+      "createdAt": "2026-10-12T15:32:02.448Z",
+      "updatedAt": "2026-10-12T10:26:46.000Z"
+    },
+    {
+      "id": "user_cust_demo_1",
+      "name": "Nilesh Patil",
+      "email": "parthgopalpatil@gmail.com",
+      "phone": "9423490514",
+      "password": "@Xyz12345",
+      "role": "CUSTOMER",
+      "avatar": null,
+      "college": "MITAOE, Alandi",
+      "location": "Pune",
+      "diet": "Veg & Non-Veg",
+      "department": null,
+      "preferences": {
+        "diet": "Veg & Non-Veg",
+        "offers": true,
+        "reminderTime": "08:00",
+        "mealReminders": true,
+        "subscriptionAlerts": true
+      },
+      "verificationStatus": "APPROVED",
+      "verified": true,
+      "reviewNotes": null,
+      "documents": {},
+      "messId": null,
+      "messName": null,
+      "createdAt": "2026-10-12 22:20:00",
+      "updatedAt": "2026-10-12T11:20:38.000Z"
+    },
+    {
+      "id": "user_owner_1791819098527",
+      "name": "Prakash Shinde",
+      "email": "shinde_owner_1791819098515@test.com",
+      "phone": "9822715191",
+      "password": "Password@123",
+      "role": "OWNER",
+      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80",
+      "college": null,
+      "location": "Alandi",
+      "diet": null,
+      "department": null,
+      "preferences": {},
+      "verificationStatus": "APPROVED",
+      "verified": true,
+      "reviewNotes": "Approved by MessConnect Quality & Compliance Team.",
+      "documents": {
+        "license": "FSSAI Food License #11524021000849",
+        "ownerId": "Aadhaar Card (UIDAI Verified: ****-****-8192)",
+        "businessDoc": "Shop Act License Registration",
+        "addressProof": "Electricity Utility Bill"
+      },
+      "messId": "mess_1791819098527",
+      "messName": "Shinde Annapurna Mess",
+      "createdAt": "2026-10-12T15:31:38.528Z",
+      "updatedAt": "2026-10-12T10:45:07.000Z",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "user_owner_1791819122436",
+      "name": "Prakash Shinde",
+      "email": "shinde_owner_1791819122425@test.com",
+      "phone": "9822389506",
+      "password": "Password@123",
+      "role": "OWNER",
+      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80",
+      "college": null,
+      "location": "Alandi",
+      "diet": null,
+      "department": null,
+      "preferences": {},
+      "verificationStatus": "APPROVED",
+      "verified": true,
+      "reviewNotes": "Application submitted. Under review by Admin compliance team.",
+      "documents": {
+        "license": "FSSAI Food License #11524021000849",
+        "ownerId": "Aadhaar Card (UIDAI Verified: ****-****-8192)",
+        "businessDoc": "Shop Act License Registration",
+        "addressProof": "Electricity Utility Bill"
+      },
+      "messId": "mess_1791819122436",
+      "messName": "Shinde Annapurna Mess",
+      "createdAt": "2026-10-12T15:32:02.436Z",
+      "updatedAt": "2026-10-12T11:12:09.000Z",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "user_owner_1791820457468",
+      "name": "Kailash Patil",
+      "email": "parthpatil503@gmail.com",
+      "phone": "9423490513",
+      "password": "@Xyz12345",
+      "role": "OWNER",
+      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80",
+      "college": null,
+      "location": "Alandi",
+      "diet": null,
+      "department": null,
+      "preferences": {},
+      "verificationStatus": "APPROVED",
+      "verified": true,
+      "reviewNotes": "Approved by MessConnect Quality & Compliance Team.",
+      "documents": {
+        "license": {
+          "title": "FSSAI Food Safety License",
+          "fileUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+          "fileName": "fssai_license_2026.pdf",
+          "fileSize": "1.1 MB",
+          "fileType": "application/pdf",
+          "docNumber": "11524021000849"
+        },
+        "ownerId": {
+          "title": "Owner Identity (Aadhaar Card)",
+          "fileUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80",
+          "fileName": "aadhaar_card_scanned.jpg",
+          "fileSize": "420 KB",
+          "fileType": "image/jpeg",
+          "docNumber": "5819-2041-8921"
+        },
+        "businessDoc": {
+          "title": "Shop & Establishment Act",
+          "fileUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=600&auto=format&fit=crop&q=80",
+          "fileName": "shop_act_license.jpg",
+          "fileSize": "360 KB",
+          "fileType": "image/jpeg",
+          "docNumber": "MH-PUN-2024-819"
+        },
+        "addressProof": {
+          "title": "Premises Address Proof",
+          "fileUrl": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80",
+          "fileName": "electricity_bill.pdf",
+          "fileSize": "510 KB",
+          "fileType": "application/pdf",
+          "docNumber": "MSEB-0982-124"
+        }
+      },
+      "messId": "mess_1791820457468",
+      "messName": "ShreeDevi Mess",
+      "createdAt": "2026-10-12T15:54:17.468Z",
+      "updatedAt": "2026-10-12T10:28:54.000Z",
+      "status": "ACTIVE"
+    }
+  ],
+  "messes": [
+    {
+      "id": "mess_1791819098527",
+      "ownerId": "user_owner_1791819098527",
+      "name": "Shinde Annapurna Mess",
+      "tagline": "Delicious, hygienic & homely meals",
+      "description": "Welcome to Shinde Annapurna Mess! Serving fresh, tasty meals prepared with high hygiene standards. Unlimited roti, dal, sabji, and rice.",
+      "area": "Alandi",
+      "city": "Pune",
+      "pincode": "411038",
+      "address": "Alandi, Pune",
+      "coordinates": {
+        "lat": 18.5204,
+        "lng": 73.8567
+      },
+      "distance": "0.8 km",
+      "rating": 5,
+      "reviewCount": 1,
+      "pricePerMonth": 3200,
+      "isPureVeg": false,
+      "hasVeg": true,
+      "hasNonVeg": true,
+      "trialAvailable": true,
+      "trialPrice": 70,
+      "verified": true,
+      "featured": false,
+      "status": "ACTIVE",
+      "verificationStatus": "APPROVED",
+      "reviewNotes": "Approved by MessConnect Quality & Compliance Team.",
+      "documents": {
+        "license": "FSSAI Food License #11524021000849",
+        "ownerId": "Aadhaar Card (UIDAI Verified: ****-****-8192)",
+        "businessDoc": "Shop Act License Registration",
+        "addressProof": "Electricity Utility Bill"
+      },
+      "phone": "9822715191",
+      "whatsapp": "9822715191",
+      "email": "shinde_owner_1791819098515@test.com",
+      "coverImage": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80"
+      ],
+      "timings": {
+        "lunch": "12:30 PM - 03:30 PM",
+        "dinner": "07:30 PM - 10:30 PM",
+        "breakfast": "07:30 AM - 10:00 AM"
+      },
+      "features": [
+        "Fresh Hot Rotis",
+        "RO Purified Drinking Water",
+        "Weekly Special Feast",
+        "Clean & Sanitized Kitchen"
+      ],
+      "plans": [
+        {
+          "id": "plan_mess_1791819098527_all",
+          "name": "All Meals (Breakfast, Lunch & Dinner)",
+          "type": "ALL_MEALS",
+          "price": 3200,
+          "daysCount": 30,
+          "description": "Full monthly plan with 3 fresh meals every day.",
+          "mealsPerDay": 3
+        },
+        {
+          "id": "plan_mess_1791819098527_two",
+          "name": "2 Meals (Lunch & Dinner)",
+          "type": "TWO_MEALS",
+          "price": 2560,
+          "daysCount": 30,
+          "description": "Lunch & Dinner combo for college students.",
+          "mealsPerDay": 2
+        }
+      ],
+      "menuToday": {
+        "lunch": [
+          "4 Soft Phulkas",
+          "Panchratna Dal",
+          "Aloo Gobi Sabji",
+          "Jeera Rice",
+          "Salad"
+        ],
+        "dinner": [
+          "Warm Rotis",
+          "Special Curry",
+          "Tadka Dal",
+          "Steamed Rice",
+          "Gulab Jamun"
+        ],
+        "breakfast": [
+          "Hot Poha with sev & lemon",
+          "Ginger Chai"
+        ]
+      },
+      "weeklyMenu": {},
+      "createdAt": "2026-10-12T10:01:38.000Z",
+      "updatedAt": "2026-10-12T10:45:07.000Z"
+    },
+    {
+      "id": "mess_1791819122436",
+      "ownerId": "user_owner_1791819122436",
+      "name": "Shinde Annapurna Mess",
+      "tagline": "Delicious, hygienic & homely meals",
+      "description": "Welcome to Shinde Annapurna Mess! Serving fresh, tasty meals prepared with high hygiene standards. Unlimited roti, dal, sabji, and rice.",
+      "area": "Alandi",
+      "city": "Pune",
+      "pincode": "411038",
+      "address": "Alandi, Pune",
+      "coordinates": {
+        "lat": 18.5204,
+        "lng": 73.8567
+      },
+      "distance": "0.8 km",
+      "rating": 5,
+      "reviewCount": 1,
+      "pricePerMonth": 3200,
+      "isPureVeg": false,
+      "hasVeg": true,
+      "hasNonVeg": true,
+      "trialAvailable": true,
+      "trialPrice": 70,
+      "verified": true,
+      "featured": false,
+      "status": "ACTIVE",
+      "verificationStatus": "APPROVED",
+      "reviewNotes": "Application submitted. Awaiting Admin verification of FSSAI license & KYC.",
+      "documents": {
+        "license": "FSSAI Food License #11524021000849",
+        "ownerId": "Aadhaar Card (UIDAI Verified: ****-****-8192)",
+        "businessDoc": "Shop Act License Registration",
+        "addressProof": "Electricity Utility Bill"
+      },
+      "phone": "9822389506",
+      "whatsapp": "9822389506",
+      "email": "shinde_owner_1791819122425@test.com",
+      "coverImage": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80"
+      ],
+      "timings": {
+        "lunch": "12:30 PM - 03:30 PM",
+        "dinner": "07:30 PM - 10:30 PM",
+        "breakfast": "07:30 AM - 10:00 AM"
+      },
+      "features": [
+        "Fresh Hot Rotis",
+        "RO Purified Drinking Water",
+        "Weekly Special Feast",
+        "Clean & Sanitized Kitchen"
+      ],
+      "plans": [
+        {
+          "id": "plan_mess_1791819122436_all",
+          "name": "All Meals (Breakfast, Lunch & Dinner)",
+          "type": "ALL_MEALS",
+          "price": 3200,
+          "daysCount": 30,
+          "description": "Full monthly plan with 3 fresh meals every day.",
+          "mealsPerDay": 3
+        },
+        {
+          "id": "plan_mess_1791819122436_two",
+          "name": "2 Meals (Lunch & Dinner)",
+          "type": "TWO_MEALS",
+          "price": 2560,
+          "daysCount": 30,
+          "description": "Lunch & Dinner combo for college students.",
+          "mealsPerDay": 2
+        }
+      ],
+      "menuToday": {
+        "lunch": [
+          "4 Soft Phulkas",
+          "Panchratna Dal",
+          "Aloo Gobi Sabji",
+          "Jeera Rice",
+          "Salad"
+        ],
+        "dinner": [
+          "Warm Rotis",
+          "Special Curry",
+          "Tadka Dal",
+          "Steamed Rice",
+          "Gulab Jamun"
+        ],
+        "breakfast": [
+          "Hot Poha with sev & lemon",
+          "Ginger Chai"
+        ]
+      },
+      "weeklyMenu": {},
+      "createdAt": "2026-10-12T10:02:02.000Z",
+      "updatedAt": "2026-10-12T11:12:09.000Z"
+    },
+    {
+      "id": "mess_1791820457468",
+      "ownerId": "user_owner_1791820457468",
+      "name": "ShreeDevi Mess",
+      "tagline": "Delicious, hygienic & homely meals",
+      "description": "Welcome to ShreeDevi Mess! Serving fresh, tasty meals prepared with high hygiene standards. Unlimited roti, dal, sabji, and rice.",
+      "area": "Alandi",
+      "city": "Pune",
+      "pincode": "412105",
+      "address": "Alandi, Pune",
+      "coordinates": {
+        "lat": 18.5204,
+        "lng": 73.8567
+      },
+      "distance": "0.8 km",
+      "rating": 5,
+      "reviewCount": 1,
+      "pricePerMonth": 3000,
+      "isPureVeg": false,
+      "hasVeg": true,
+      "hasNonVeg": true,
+      "trialAvailable": true,
+      "trialPrice": 70,
+      "verified": true,
+      "featured": false,
+      "status": "ACTIVE",
+      "verificationStatus": "APPROVED",
+      "reviewNotes": "Approved by MessConnect Quality & Compliance Team.",
+      "documents": {
+        "license": {
+          "title": "FSSAI Food Safety License",
+          "fileUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+          "fileName": "fssai_license_2026.pdf",
+          "fileSize": "1.1 MB",
+          "fileType": "application/pdf",
+          "docNumber": "11524021000849"
+        },
+        "ownerId": {
+          "title": "Owner Identity (Aadhaar Card)",
+          "fileUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80",
+          "fileName": "aadhaar_card_scanned.jpg",
+          "fileSize": "420 KB",
+          "fileType": "image/jpeg",
+          "docNumber": "5819-2041-8921"
+        },
+        "businessDoc": {
+          "title": "Shop & Establishment Act",
+          "fileUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=600&auto=format&fit=crop&q=80",
+          "fileName": "shop_act_license.jpg",
+          "fileSize": "360 KB",
+          "fileType": "image/jpeg",
+          "docNumber": "MH-PUN-2024-819"
+        },
+        "addressProof": {
+          "title": "Premises Address Proof",
+          "fileUrl": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80",
+          "fileName": "electricity_bill.pdf",
+          "fileSize": "510 KB",
+          "fileType": "application/pdf",
+          "docNumber": "MSEB-0982-124"
+        }
+      },
+      "phone": "9423490513",
+      "whatsapp": "9423490513",
+      "email": "parthpatil503@gmail.com",
+      "coverImage": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80"
+      ],
+      "timings": {
+        "lunch": "12:30 PM - 03:30 PM",
+        "dinner": "07:30 PM - 10:30 PM",
+        "breakfast": "07:30 AM - 10:00 AM"
+      },
+      "features": [
+        "Fresh Hot Rotis",
+        "RO Purified Drinking Water",
+        "Weekly Special Feast",
+        "Clean & Sanitized Kitchen"
+      ],
+      "plans": [
+        {
+          "id": "plan_mess_1791820457468_all",
+          "name": "All Meals (Breakfast, Lunch & Dinner)",
+          "type": "ALL_MEALS",
+          "price": 3000,
+          "daysCount": 30,
+          "description": "Full monthly plan with 3 fresh meals every day.",
+          "mealsPerDay": 3
+        },
+        {
+          "id": "plan_mess_1791820457468_two",
+          "name": "2 Meals (Lunch & Dinner)",
+          "type": "TWO_MEALS",
+          "price": 2400,
+          "daysCount": 30,
+          "description": "Lunch & Dinner combo for college students.",
+          "mealsPerDay": 2
+        }
+      ],
+      "menuToday": {
+        "lunch": [
+          "4 Soft Phulkas",
+          "Panchratna Dal",
+          "Aloo Gobi Sabji",
+          "Jeera Rice",
+          "Salad"
+        ],
+        "dinner": [
+          "Warm Rotis",
+          "Special Curry",
+          "Tadka Dal",
+          "Steamed Rice",
+          "Gulab Jamun"
+        ],
+        "breakfast": [
+          "Hot Poha with sev & lemon",
+          "Ginger Chai"
+        ]
+      },
+      "weeklyMenu": {},
+      "createdAt": "2026-10-12T10:24:17.000Z",
+      "updatedAt": "2026-10-12T10:28:54.000Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "sub_1791819098558",
+      "userId": "user_cust_1791819098546",
+      "userName": "Aditya Patil",
+      "userPhone": null,
+      "messId": "mess_1791819098527",
+      "messName": "Shinde Annapurna Mess",
+      "planId": "monthly_both",
+      "planName": "Custom Plan",
+      "paymentId": null,
+      "amount": 2800,
+      "meals": [
+        "Breakfast",
+        "Lunch",
+        "Dinner"
+      ],
+      "status": "ACTIVE",
+      "totalDays": 30,
+      "activeDays": 0,
+      "pausedDays": 0,
+      "remainingDays": 30,
+      "startDate": "2026-10-12",
+      "endDate": "2026-11-11",
+      "pauses": [],
+      "cancelReason": null,
+      "cancelledAt": null,
+      "createdAt": "2026-10-12T10:01:38.000Z",
+      "updatedAt": "2026-10-12T10:01:38.000Z"
+    },
+    {
+      "id": "sub_1791819122458",
+      "userId": "user_cust_1791819122448",
+      "userName": "Aditya Patil",
+      "userPhone": null,
+      "messId": "mess_1791819122436",
+      "messName": "Shinde Annapurna Mess",
+      "planId": "monthly_both",
+      "planName": "Custom Plan",
+      "paymentId": null,
+      "amount": 2800,
+      "meals": [
+        "Breakfast",
+        "Lunch",
+        "Dinner"
+      ],
+      "status": "ACTIVE",
+      "totalDays": 30,
+      "activeDays": 0,
+      "pausedDays": 0,
+      "remainingDays": 30,
+      "startDate": "2026-10-12",
+      "endDate": "2026-11-11",
+      "pauses": [],
+      "cancelReason": null,
+      "cancelledAt": null,
+      "createdAt": "2026-10-12T10:02:02.000Z",
+      "updatedAt": "2026-10-12T10:02:02.000Z"
+    }
+  ],
+  "trials": [],
+  "payments": [
+    {
+      "id": "pay_txn_1791819098561",
+      "orderId": null,
+      "paymentId": null,
+      "signature": null,
+      "userId": "user_cust_1791819098546",
+      "messId": "mess_1791819098527",
+      "subscriptionId": "sub_1791819098558",
+      "trialId": null,
+      "amount": 2800,
+      "currency": "INR",
+      "method": "Mock UPI",
+      "status": "SUCCESS",
+      "receiptNumber": null,
+      "description": "Subscription - Custom Plan (Shinde Annapurna Mess)",
+      "date": "2026-10-12T15:31:38.561Z",
+      "createdAt": "2026-10-12T10:01:38.000Z"
+    },
+    {
+      "id": "pay_txn_1791819122460",
+      "orderId": null,
+      "paymentId": null,
+      "signature": null,
+      "userId": "user_cust_1791819122448",
+      "messId": "mess_1791819122436",
+      "subscriptionId": "sub_1791819122458",
+      "trialId": null,
+      "amount": 2800,
+      "currency": "INR",
+      "method": "Mock UPI",
+      "status": "SUCCESS",
+      "receiptNumber": null,
+      "description": "Subscription - Custom Plan (Shinde Annapurna Mess)",
+      "date": "2026-10-12T15:32:02.460Z",
+      "createdAt": "2026-10-12T10:02:02.000Z"
+    },
+    {
+      "id": "pay_txn_1791822088363",
+      "orderId": "order_rzp_1791822088363_3ndnt",
+      "paymentId": "pay_test_1791822088375_h5j7",
+      "signature": "69e4a8621d09576cfd62e36aae24ecb1611f385a79f0fa04be3fc575c0d7c621",
+      "userId": "user_cust_1",
+      "messId": "mess_1",
+      "subscriptionId": "sub_test_101",
+      "trialId": null,
+      "amount": 2800,
+      "currency": "INR",
+      "method": "Razorpay UPI (Google Pay)",
+      "status": "SUCCESS",
+      "receiptNumber": "rcpt_1791822088363",
+      "description": "Monthly Lunch + Dinner Pass",
+      "date": "2026-10-12T16:21:28.363Z",
+      "createdAt": "2026-10-12T10:51:28.000Z"
+    }
+  ],
+  "reviews": [],
+  "notifications": [
+    {
+      "id": "notif_1791821707459",
+      "userId": "user_owner_1791819098527",
+      "broadcast": false,
+      "channel": "Account",
+      "title": "? Account Approved!",
+      "message": "Your mess is verified! You can now scan student meal passes and publish menus.",
+      "read": false,
+      "type": null,
+      "time": null,
+      "timestamp": null,
+      "createdAt": "2026-10-12T16:15:07.459Z"
+    },
+    {
+      "id": "notif_1791820734277",
+      "userId": "user_owner_1791820457468",
+      "broadcast": false,
+      "channel": "Account",
+      "title": "? Account Approved!",
+      "message": "Your mess is verified! You can now scan student meal passes and publish menus.",
+      "read": false,
+      "type": null,
+      "time": null,
+      "timestamp": null,
+      "createdAt": "2026-10-12T15:58:54.277Z"
+    },
+    {
+      "id": "notif_1791820606060",
+      "userId": "user_owner_1791820457468",
+      "broadcast": false,
+      "channel": "Account",
+      "title": "? Account Approved!",
+      "message": "Your mess is verified! You can now scan student meal passes and publish menus.",
+      "read": false,
+      "type": null,
+      "time": null,
+      "timestamp": null,
+      "createdAt": "2026-10-12T15:56:46.060Z"
+    },
+    {
+      "id": "notif_1791819098566",
+      "userId": "user_cust_1791819098546",
+      "broadcast": false,
+      "channel": "Subscriptions",
+      "title": "? Subscription Activated!",
+      "message": "You are now subscribed to Shinde Annapurna Mess (Custom Plan). Valid until 2026-11-11.",
+      "read": false,
+      "type": "SUBSCRIPTION_ACTIVE",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:31:38.566Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819098569",
+      "userId": "user_owner_1791819098527",
+      "broadcast": false,
+      "channel": "Subscriptions",
+      "title": "? New Student Subscribed!",
+      "message": "Aditya Patil subscribed to Custom Plan.",
+      "read": false,
+      "type": "OWNER_NEW_SUB",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:31:38.569Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819098641",
+      "userId": "user_cust_1791819098546",
+      "broadcast": false,
+      "channel": "System",
+      "title": "Attendance Marked ✅",
+      "message": "Your attendance for Dinner at Shinde Annapurna Mess has been marked successfully.",
+      "read": false,
+      "type": "ATTENDANCE",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:31:38.641Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819098643",
+      "userId": "user_owner_1791819098527",
+      "broadcast": false,
+      "channel": "System",
+      "title": "Student Check-In: Aditya Patil ?️",
+      "message": "Aditya Patil just marked attendance for Dinner at 9:01 pm.",
+      "read": false,
+      "type": "ATTENDANCE_CHECKIN",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:31:38.643Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819122461",
+      "userId": "user_cust_1791819122448",
+      "broadcast": false,
+      "channel": "Subscriptions",
+      "title": "? Subscription Activated!",
+      "message": "You are now subscribed to Shinde Annapurna Mess (Custom Plan). Valid until 2026-11-11.",
+      "read": false,
+      "type": "SUBSCRIPTION_ACTIVE",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:32:02.461Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819122463",
+      "userId": "user_owner_1791819122436",
+      "broadcast": false,
+      "channel": "Subscriptions",
+      "title": "? New Student Subscribed!",
+      "message": "Aditya Patil subscribed to Custom Plan.",
+      "read": false,
+      "type": "OWNER_NEW_SUB",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:32:02.463Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819122482",
+      "userId": "user_cust_1791819122448",
+      "broadcast": false,
+      "channel": "System",
+      "title": "Attendance Marked ✅",
+      "message": "Your attendance for Dinner at Shinde Annapurna Mess has been marked successfully.",
+      "read": false,
+      "type": "ATTENDANCE",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:32:02.482Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791819122484",
+      "userId": "user_owner_1791819122436",
+      "broadcast": false,
+      "channel": "System",
+      "title": "Student Check-In: Aditya Patil ?️",
+      "message": "Aditya Patil just marked attendance for Dinner at 9:02 pm.",
+      "read": false,
+      "type": "ATTENDANCE_CHECKIN",
+      "time": "Just now",
+      "timestamp": "2026-10-12T15:32:02.484Z",
+      "createdAt": null
+    },
+    {
+      "id": "notif_1791822088391",
+      "userId": "user_cust_1",
+      "broadcast": false,
+      "channel": "Subscriptions",
+      "title": "? Payment Successful!",
+      "message": "Payment of ₹2800 verified successfully. Receipt #rcpt_1791822088363 generated.",
+      "read": false,
+      "type": "PAYMENT_SUCCESS",
+      "time": "Just now",
+      "timestamp": "2026-10-12T16:21:28.391Z",
+      "createdAt": null
+    }
+  ],
+  "complaints": [],
+  "offers": [],
+  "checkins": [],
+  "flexipassTiers": [],
+  "flexipasses": [],
+  "groups": [],
+  "favorites": [],
+  "searchHistory": [],
+  "attendanceSessions": [
+    {
+      "id": "att_sess_1791819122475_7nqu",
+      "messId": "mess_1791819122436",
+      "messName": "Shinde Annapurna Mess",
+      "sessionType": "Dinner",
+      "date": "2026-10-12",
+      "token": "LIFETIME_mess_1791819122436_2026-10-12_Dinner",
+      "expiresAt": "2026-10-13T15:32:02.474Z",
+      "status": "ACTIVE",
+      "createdById": "user_owner_1791819122436",
+      "createdAt": "2026-10-12T15:32:02.475Z"
+    },
+    {
+      "id": "att_sess_1791819098584_1bxf",
+      "messId": "mess_1791819098527",
+      "messName": "Shinde Annapurna Mess",
+      "sessionType": "Dinner",
+      "date": "2026-10-12",
+      "token": "LIFETIME_mess_1791819098527_2026-10-12_Dinner",
+      "expiresAt": "2026-10-13T15:31:38.584Z",
+      "status": "ACTIVE",
+      "createdById": "user_owner_1791819098527",
+      "createdAt": "2026-10-12T15:31:38.584Z"
+    }
+  ],
+  "attendance": [
+    {
+      "id": "att_rec_1791819122479_xvo8",
+      "studentId": "user_cust_1791819122448",
+      "studentName": "Aditya Patil",
+      "messId": "mess_1791819122436",
+      "messName": "Shinde Annapurna Mess",
+      "sessionId": "att_sess_1791819122475_7nqu",
+      "attendanceDate": "2026-10-12",
+      "sessionType": "Dinner",
+      "status": "PRESENT",
+      "markedAt": "9:02 pm",
+      "createdAt": "2026-10-12T15:32:02.479Z"
+    },
+    {
+      "id": "att_rec_1791819098634_rlww",
+      "studentId": "user_cust_1791819098546",
+      "studentName": "Aditya Patil",
+      "messId": "mess_1791819098527",
+      "messName": "Shinde Annapurna Mess",
+      "sessionId": "att_sess_1791819098584_1bxf",
+      "attendanceDate": "2026-10-12",
+      "sessionType": "Dinner",
+      "status": "PRESENT",
+      "markedAt": "9:01 pm",
+      "createdAt": "2026-10-12T15:31:38.634Z"
+    }
+  ],
+  "attendanceAuditLogs": [
+    {
+      "id": "att_audit_1791819122480_l1kg",
+      "userId": null,
+      "userName": null,
+      "role": "STUDENT",
+      "action": "ATTENDANCE_MARKED",
+      "messId": "mess_1791819122436",
+      "messName": null,
+      "studentId": "user_cust_1791819122448",
+      "studentName": "Aditya Patil",
+      "sessionType": "Dinner",
+      "date": null,
+      "time": null,
+      "reason": null,
+      "oldStatus": null,
+      "newStatus": null,
+      "details": {
+        "time": "9:02 pm",
+        "method": "QR_SCAN"
+      },
+      "ipAddress": null,
+      "createdAt": "2026-10-12T15:32:02.480Z"
+    },
+    {
+      "id": "att_audit_1791819098637_z1d3",
+      "userId": null,
+      "userName": null,
+      "role": "STUDENT",
+      "action": "ATTENDANCE_MARKED",
+      "messId": "mess_1791819098527",
+      "messName": null,
+      "studentId": "user_cust_1791819098546",
+      "studentName": "Aditya Patil",
+      "sessionType": "Dinner",
+      "date": null,
+      "time": null,
+      "reason": null,
+      "oldStatus": null,
+      "newStatus": null,
+      "details": {
+        "time": "9:01 pm",
+        "method": "QR_SCAN"
+      },
+      "ipAddress": null,
+      "createdAt": "2026-10-12T15:31:38.637Z"
+    }
+  ],
+  "attendanceSettings": [
+    {
+      "messId": "mess_1789969020922",
+      "breakfastStart": "07:00",
+      "breakfastEnd": "10:00",
+      "lunchStart": "12:00",
+      "lunchEnd": "15:00",
+      "dinnerStart": "19:00",
+      "dinnerEnd": "22:00",
+      "lowAttendanceThreshold": 75,
+      "locationVerificationEnabled": false,
+      "radiusMeters": 100,
+      "autoRotateQrEnabled": false,
+      "qrRotationIntervalMinutes": 5,
+      "updatedAt": "2026-10-12T02:44:51.000Z"
+    },
+    {
+      "messId": "mess_1791819098527",
+      "breakfastStart": "07:30",
+      "breakfastEnd": "10:30",
+      "lunchStart": "12:00",
+      "lunchEnd": "15:30",
+      "dinnerStart": "19:30",
+      "dinnerEnd": "22:30",
+      "lowAttendanceThreshold": 75,
+      "locationVerificationEnabled": false,
+      "radiusMeters": 100,
+      "autoRotateQrEnabled": false,
+      "qrRotationIntervalMinutes": 5,
+      "updatedAt": "2026-10-12T10:01:38.000Z"
+    },
+    {
+      "messId": "mess_1791819122436",
+      "breakfastStart": "07:30",
+      "breakfastEnd": "10:30",
+      "lunchStart": "12:00",
+      "lunchEnd": "15:30",
+      "dinnerStart": "19:30",
+      "dinnerEnd": "22:30",
+      "lowAttendanceThreshold": 75,
+      "locationVerificationEnabled": false,
+      "radiusMeters": 100,
+      "autoRotateQrEnabled": false,
+      "qrRotationIntervalMinutes": 5,
+      "updatedAt": "2026-10-12T10:02:02.000Z"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "ann_1791811554400_ta53l",
+      "title": "Scheduled Platform Maintenance Notice",
+      "message": "System upgrade tonight at 11:30 PM. No check-in disruption.",
+      "target": "ALL_STUDENTS",
+      "targetId": null,
+      "targetName": null,
+      "createdById": "admin_root",
+      "createdByName": "Platform Admin",
+      "createdByRole": "ADMIN",
+      "messId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-12T13:25:54.400Z"
+    },
+    {
+      "id": "ann_1791809607589_1nukh",
+      "title": "Scheduled Platform Maintenance Notice",
+      "message": "System upgrade tonight at 11:30 PM. No check-in disruption.",
+      "target": "ALL_STUDENTS",
+      "targetId": null,
+      "targetName": null,
+      "createdById": "admin_root",
+      "createdByName": "Platform Admin",
+      "createdByRole": "ADMIN",
+      "messId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-12T12:53:27.589Z"
+    },
+    {
+      "id": "ann_1791809484756_3zbwr",
+      "title": "Scheduled Platform Maintenance Notice",
+      "message": "System upgrade tonight at 11:30 PM. No check-in disruption.",
+      "target": "ALL_STUDENTS",
+      "targetId": null,
+      "targetName": null,
+      "createdById": "admin_root",
+      "createdByName": "Platform Admin",
+      "createdByRole": "ADMIN",
+      "messId": null,
+      "status": "ACTIVE",
+      "createdAt": "2026-10-12T12:51:24.756Z"
+    }
+  ],
+  "platformSettings": {
+    "commissionRatePercent": 2,
+    "autoApproveVerifiedOwners": false,
+    "smsGatewayActive": true,
+    "emailGatewayActive": true,
+    "maintenanceMode": false,
+    "supportTeam": [
+      {
+        "id": "rohit",
+        "name": "Rohit",
+        "phone": "8766793139",
+        "displayPhone": "+91 87667 93139",
+        "role": "Student & Meal Pass Support",
+        "type": "support",
+        "badge": "Support Desk"
+      },
+      {
+        "id": "shreyash",
+        "name": "Shreyash",
+        "phone": "9309294400",
+        "displayPhone": "+91 93092 94400",
+        "role": "Kitchen Partner & Operations Support",
+        "type": "support",
+        "badge": "Support Desk"
+      },
+      {
+        "id": "parth",
+        "name": "Parth",
+        "phone": "9423490513",
+        "displayPhone": "+91 94234 90513",
+        "role": "Platform Admin & Escalations Lead",
+        "type": "admin",
+        "badge": "Admin Support"
+      }
+    ]
+  }
+}

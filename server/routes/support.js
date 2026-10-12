@@ -1,0 +1,77 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../db/database');
+const { sendSupportQueryEmail } = require('../services/emailService');
+
+// POST /api/support/query or /api/contact/query
+router.post(['/query', '/ticket', '/contact', '/'], async (req, res) => {
+  try {
+    const {
+      name,
+      contact,
+      email,
+      phone,
+      category = 'General Support',
+      message,
+      userId,
+      userRole
+    } = req.body;
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Query message cannot be empty.'
+      });
+    }
+
+    const effectiveContact = contact || phone || email || 'Not provided';
+    const effectiveName = name || (userId ? db.getUserById(userId)?.name : 'MessConnect User');
+    const effectiveEmail = email || (contact && contact.includes('@') ? contact : null);
+
+    // Send email to admin Gmail: exampleexample942349@gmail.com
+    let emailResult = { success: false };
+    try {
+      emailResult = await sendSupportQueryEmail({
+        name: effectiveName,
+        contact: effectiveContact,
+        email: effectiveEmail,
+        category,
+        message: message.trim(),
+        userId,
+        userRole
+      });
+    } catch (mailErr) {
+      console.error('⚠️ [Support Query] Failed to deliver email via SMTP:', mailErr.message);
+    }
+
+    // Also record an in-app notification if userId is provided
+    if (userId) {
+      try {
+        db.createNotification({
+          userId,
+          title: 'Query Submitted to Admin',
+          message: `Your query regarding "${category}" has been sent to our campus support team. We will contact you at ${effectiveContact}.`,
+          type: 'SYSTEM',
+          channel: 'Support'
+        });
+      } catch (_) {}
+    }
+
+    const ticketId = 'MC-TKT-' + Date.now().toString().slice(-6);
+
+    res.status(200).json({
+      success: true,
+      ticketId,
+      message: 'Support query received successfully and dispatched to admin Gmail (exampleexample942349@gmail.com).',
+      emailDelivered: Boolean(emailResult?.messageId)
+    });
+  } catch (error) {
+    console.error('Error handling support query:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process support query. Please try calling the admin helpline directly.'
+    });
+  }
+});
+
+module.exports = router;

@@ -1,0 +1,32 @@
+{
+  "name": "messconnect-prototype",
+  "version": "1.0.0",
+  "description": "MessConnect - Smart Mess Discovery & Subscription Prototype",
+  "main": "server/server.js",
+  "scripts": {
+    "server": "node server/server.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run server\" \"npm run client\"",
+    "build": "npm run build --prefix client",
+    "start": "node server/server.js",
+    "db:migrate": "node server/db/migrateToMySQL.js",
+    "db:clean": "node server/db/cleanDatabase.js"
+  },
+  "keywords": [
+    "messconnect",
+    "food-subscription",
+    "student-mess",
+    "react",
+    "node"
+  ],
+  "author": "MessConnect Team",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.1",
+    "express": "^4.19.2",
+    "mysql2": "^3.24.4",
+    "nodemailer": "^10.0.10"
+  }
+}
