@@ -447,9 +447,9 @@ router.post('/register-send-otp', async (req, res) => {
     registrationData: req.body
   });
 
-  console.log(`[Auth] Registration OTP generated for ${cleanEmail}: ${otp} (Expires in 3 mins)`);
+  console.log(`[Auth] Registration OTP generated for ${cleanEmail} (Expires in 3 mins)`);
 
-  // Dispatch real email via Brevo SMTP
+  // Dispatch real email via configured SMTP
   const emailResult = await sendVerificationOtp({
     email: cleanEmail,
     name: name.trim(),
@@ -461,16 +461,21 @@ router.post('/register-send-otp', async (req, res) => {
     if (emailResult.isIpRestricted) {
       return res.status(502).json({
         success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate", or add IP 152.58.32.176.`,
-        isIpRestricted: true,
-        ip: '152.58.32.176'
-      });
-    } else {
-      return res.status(502).json({
-        success: false,
-        message: `Failed to deliver verification code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`
+        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
+        isIpRestricted: true
       });
     }
+
+    const cleanErrorMsg = emailResult.code === 'EAUTH'
+      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (emailResult.code === 'ETIMEDOUT'
+          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
+          : `Failed to deliver verification code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`);
+
+    return res.status(502).json({
+      success: false,
+      message: cleanErrorMsg
+    });
   }
 
   res.json({
@@ -629,9 +634,9 @@ router.post('/owner-request-login-otp', async (req, res) => {
     userId: owner.id
   });
 
-  console.log(`[Auth] Mess Owner login OTP generated for ${cleanEmail}: ${otp} (Expires in 3 mins)`);
+  console.log(`[Auth] Mess Owner login OTP generated for ${cleanEmail} (Expires in 3 mins)`);
 
-  // Dispatch real email via Brevo SMTP
+  // Dispatch real email via configured SMTP
   const emailResult = await sendOwnerLoginOtp({
     email: cleanEmail,
     name: owner.name,
@@ -643,16 +648,21 @@ router.post('/owner-request-login-otp', async (req, res) => {
     if (emailResult.isIpRestricted) {
       return res.status(502).json({
         success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate", or add IP 152.58.32.176.`,
-        isIpRestricted: true,
-        ip: '152.58.32.176'
-      });
-    } else {
-      return res.status(502).json({
-        success: false,
-        message: `Failed to deliver login code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`
+        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
+        isIpRestricted: true
       });
     }
+
+    const cleanErrorMsg = emailResult.code === 'EAUTH'
+      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (emailResult.code === 'ETIMEDOUT'
+          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
+          : `Failed to deliver login code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`);
+
+    return res.status(502).json({
+      success: false,
+      message: cleanErrorMsg
+    });
   }
 
   res.json({
@@ -758,25 +768,30 @@ router.post('/forgot-password', async (req, res) => {
     userId: user.id
   });
 
-  console.log(`[Auth] Password reset OTP generated for ${cleanEmail}: ${otp} (Expires in 3 mins)`);
+  console.log(`[Auth] Password reset OTP generated for ${cleanEmail} (Expires in 3 mins)`);
 
-  // Dispatch real email via Brevo SMTP
+  // Dispatch real email via configured SMTP
   const emailResult = await sendPasswordResetOtp({ email: cleanEmail, name: user.name, otp });
 
   if (!emailResult.success) {
     if (emailResult.isIpRestricted) {
       return res.status(502).json({
         success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate", or add IP 152.58.32.176.`,
-        isIpRestricted: true,
-        ip: '152.58.32.176'
-      });
-    } else {
-      return res.status(502).json({
-        success: false,
-        message: `Failed to deliver password reset code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`
+        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
+        isIpRestricted: true
       });
     }
+
+    const cleanErrorMsg = emailResult.code === 'EAUTH'
+      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (emailResult.code === 'ETIMEDOUT'
+          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
+          : `Failed to deliver password reset code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`);
+
+    return res.status(502).json({
+      success: false,
+      message: cleanErrorMsg
+    });
   }
 
   res.json({
@@ -1094,16 +1109,21 @@ router.post('/send-verification-otp', async (req, res) => {
     if (mailResult.isIpRestricted) {
       return res.status(502).json({
         success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate", or add IP 152.58.32.176.`,
-        isIpRestricted: true,
-        ip: '152.58.32.176'
-      });
-    } else {
-      return res.status(502).json({
-        success: false,
-        message: `Failed to deliver verification code to ${cleanEmail}: ${mailResult.error || 'SMTP delivery failure'}.`
+        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
+        isIpRestricted: true
       });
     }
+
+    const cleanErrorMsg = mailResult.code === 'EAUTH'
+      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (mailResult.code === 'ETIMEDOUT'
+          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
+          : `Failed to deliver verification code to ${cleanEmail}: ${mailResult.error || 'SMTP delivery failure'}.`);
+
+    return res.status(502).json({
+      success: false,
+      message: cleanErrorMsg
+    });
   }
 
   res.json({
@@ -1154,12 +1174,12 @@ router.post('/verify-email-otp', (req, res) => {
   });
 });
 
-// GET /api/auth/email-service-status - Check Brevo SMTP connection health
+// GET /api/auth/email-service-status - Check email service connection health
 router.get('/email-service-status', async (req, res) => {
   const status = await checkSmtpHealth();
   res.json({
-    success: true,
-    gateway: 'Brevo (formerly Sendinblue)',
+    success: status.connected,
+    gateway: status.provider || (status.mode === 'GMAIL_SMTP' ? 'Google Gmail SMTP' : 'Custom SMTP'),
     ...status
   });
 });

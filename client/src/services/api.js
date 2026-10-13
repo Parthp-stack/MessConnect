@@ -1,7 +1,14 @@
 // API Service with Offline-First Resilient Fallback
 import { storage } from './storage';
 
-const BASE_URL = '/api';
+const getBaseUrl = () => {
+  const envUrl = (typeof import.meta !== 'undefined' && import.meta.env && (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL)) || '';
+  if (!envUrl) return '/api';
+  const clean = envUrl.replace(/\/+$/, '');
+  return clean.endsWith('/api') ? clean : `${clean}/api`;
+};
+
+const BASE_URL = getBaseUrl();
 
 class ApiService {
   constructor() {

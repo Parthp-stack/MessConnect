@@ -28,7 +28,7 @@ router.post(['/query', '/ticket', '/contact', '/'], async (req, res) => {
     const effectiveName = name || (userId ? db.getUserById(userId)?.name : 'MessConnect User');
     const effectiveEmail = email || (contact && contact.includes('@') ? contact : null);
 
-    // Send email to admin Gmail: exampleexample942349@gmail.com
+    // Dispatch inquiry email to admin / support mailbox
     let emailResult = { success: false };
     try {
       emailResult = await sendSupportQueryEmail({
@@ -62,7 +62,7 @@ router.post(['/query', '/ticket', '/contact', '/'], async (req, res) => {
     res.status(200).json({
       success: true,
       ticketId,
-      message: 'Support query received successfully and dispatched to admin Gmail (exampleexample942349@gmail.com).',
+      message: 'Support query received successfully and dispatched to support team.',
       emailDelivered: Boolean(emailResult?.messageId)
     });
   } catch (error) {

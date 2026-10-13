@@ -1,6 +1,17 @@
+const path = require('path');
+const dotenv = require('dotenv');
+
+// Load environment variables immediately before any other module loads
+dotenv.config();
+const rootDir = path.resolve(__dirname, '..');
+dotenv.config({ path: path.join(rootDir, '.env') });
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: path.join(rootDir, '.env.production') });
+}
+dotenv.config({ path: path.join(__dirname, '.env') });
+
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const fs = require('fs');
 
 const authRoutes = require('./routes/auth');
@@ -71,7 +82,7 @@ app.get('/api/health', async (req, res) => {
       connected: db.mysqlConnected
     },
     emailGateway: {
-      provider: emailHealth.mode === 'GMAIL_SMTP' ? 'Google Gmail SMTP' : 'Brevo (formerly Sendinblue)',
+      provider: emailHealth.provider || (emailHealth.mode === 'GMAIL_SMTP' ? 'Google Gmail SMTP' : 'Custom SMTP'),
       user: emailHealth.user,
       sender: SENDER.email,
       connected: emailHealth.connected,
@@ -161,9 +172,11 @@ function startServer() {
   server.listen(PORT, () => {
     console.log(`\n======================================================`);
     console.log(`🚀 MessConnect Backend Server Running on http://localhost:${PORT}`);
-    const emailGatewayDesc = process.env.GMAIL_USER
-      ? `Google Gmail SMTP (${process.env.GMAIL_USER})`
-      : `Brevo SMTP on ${SMTP_CONFIG.host}:${SMTP_CONFIG.port} (${SMTP_CONFIG.auth.user})`;
+    const activeEmailUser = process.env.EMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER;
+    const isGmailService = Boolean(activeEmailUser && (activeEmailUser.includes('gmail') || process.env.EMAIL_SERVICE === 'gmail' || process.env.GMAIL_APP_PASS || process.env.EMAIL_PASS));
+    const emailGatewayDesc = isGmailService
+      ? `Google Gmail SMTP (${activeEmailUser})`
+      : `SMTP on ${SMTP_CONFIG.host}:${SMTP_CONFIG.port} (${SMTP_CONFIG.auth.user || 'None'})`;
     console.log(`✉️ Email Gateway: ${emailGatewayDesc}`);
     console.log(`   Healthcheck: http://localhost:${PORT}/api/health`);
     console.log(`   Tagline: "Find. Subscribe. Eat. Simplify."`);
