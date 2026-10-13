@@ -41,7 +41,7 @@ router.post(['/query', '/ticket', '/contact', '/'], async (req, res) => {
         userRole
       });
     } catch (mailErr) {
-      console.error('⚠️ [Support Query] Failed to deliver email via SMTP:', mailErr.message);
+      console.error('⚠️ [Support Query] Failed to deliver email via Resend API:', mailErr.message);
     }
 
     // Also record an in-app notification if userId is provided

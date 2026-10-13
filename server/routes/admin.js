@@ -361,7 +361,7 @@ router.post('/verifications/:id/decision', (req, res) => {
   console.log(`[Admin Notification] Simulated SMS to ${owner?.phone || (mess && mess.phone)}: ${simulatedSms}`);
   console.log(`[Admin Notification] Email notification triggered for ${owner?.email || (mess && mess.email)}`);
 
-  // Send real status email to mess owner via Gmail SMTP (safe & non-blocking)
+  // Send real status email to mess owner via Resend HTTPS API (safe & non-blocking)
   const targetEmail = owner?.email || (mess && mess.email);
   if (targetEmail) {
     try {
@@ -386,7 +386,7 @@ router.post('/verifications/:id/decision', (req, res) => {
     notification: {
       sms: simulatedSms,
       email: simulatedEmail,
-      gateway: 'GMAIL_SMTP'
+      gateway: 'RESEND_API'
     }
   });
 });

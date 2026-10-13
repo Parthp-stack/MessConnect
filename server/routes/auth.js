@@ -6,7 +6,7 @@ const {
   sendVerificationOtp,
   sendOwnerLoginOtp,
   sendWelcomeEmail,
-  checkSmtpHealth,
+  checkResendHealth,
   sendEmail,
   getEmailGatewayMode
 } = require('../services/emailService');
@@ -372,7 +372,7 @@ function createAccountAndMess(data) {
   db.data.users.push(newUser);
   db.save();
 
-  // Send Welcome email via Gmail SMTP
+  // Send Welcome email via Resend API
   sendWelcomeEmail({
     email: cleanEmail,
     name: newUser.name,
@@ -449,7 +449,7 @@ router.post('/register-send-otp', async (req, res) => {
 
   console.log(`[Auth] Registration OTP generated for ${cleanEmail} (Expires in 3 mins)`);
 
-  // Dispatch real email via configured SMTP
+  // Dispatch real email via Resend HTTPS API
   const emailResult = await sendVerificationOtp({
     email: cleanEmail,
     name: name.trim(),
@@ -458,17 +458,9 @@ router.post('/register-send-otp', async (req, res) => {
   });
 
   if (!emailResult.success) {
-    const cleanErrorMsg = emailResult.code === 'EAUTH' || emailResult.responseCode === 535
-      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (emailResult.code === 'ETIMEDOUT' || emailResult.code === 'ECONNECTION' || emailResult.code === 'ESOCKET'
-          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
-          : (emailResult.code === 'ENOTFOUND'
-              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
-              : `Failed to deliver verification code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`));
-
     return res.status(502).json({
       success: false,
-      message: cleanErrorMsg
+      message: `Failed to deliver verification code to ${cleanEmail}: ${emailResult.error || 'Email delivery failure'}.`
     });
   }
 
@@ -630,7 +622,7 @@ router.post('/owner-request-login-otp', async (req, res) => {
 
   console.log(`[Auth] Mess Owner login OTP generated for ${cleanEmail} (Expires in 3 mins)`);
 
-  // Dispatch real email via configured SMTP
+  // Dispatch real email via Resend HTTPS API
   const emailResult = await sendOwnerLoginOtp({
     email: cleanEmail,
     name: owner.name,
@@ -639,17 +631,9 @@ router.post('/owner-request-login-otp', async (req, res) => {
   });
 
   if (!emailResult.success) {
-    const cleanErrorMsg = emailResult.code === 'EAUTH' || emailResult.responseCode === 535
-      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (emailResult.code === 'ETIMEDOUT' || emailResult.code === 'ECONNECTION' || emailResult.code === 'ESOCKET'
-          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
-          : (emailResult.code === 'ENOTFOUND'
-              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
-              : `Failed to deliver login code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`));
-
     return res.status(502).json({
       success: false,
-      message: cleanErrorMsg
+      message: `Failed to deliver login code to ${cleanEmail}: ${emailResult.error || 'Email delivery failure'}.`
     });
   }
 
@@ -758,21 +742,13 @@ router.post('/forgot-password', async (req, res) => {
 
   console.log(`[Auth] Password reset OTP generated for ${cleanEmail} (Expires in 3 mins)`);
 
-  // Dispatch real email via configured SMTP
+  // Dispatch real email via Resend HTTPS API
   const emailResult = await sendPasswordResetOtp({ email: cleanEmail, name: user.name, otp });
 
   if (!emailResult.success) {
-    const cleanErrorMsg = emailResult.code === 'EAUTH' || emailResult.responseCode === 535
-      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (emailResult.code === 'ETIMEDOUT' || emailResult.code === 'ECONNECTION' || emailResult.code === 'ESOCKET'
-          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
-          : (emailResult.code === 'ENOTFOUND'
-              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
-              : `Failed to deliver password reset code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`));
-
     return res.status(502).json({
       success: false,
-      message: cleanErrorMsg
+      message: `Failed to deliver password reset code to ${cleanEmail}: ${emailResult.error || 'Email delivery failure'}.`
     });
   }
 
@@ -1088,17 +1064,9 @@ router.post('/send-verification-otp', async (req, res) => {
   });
 
   if (!mailResult.success) {
-    const cleanErrorMsg = mailResult.code === 'EAUTH' || mailResult.responseCode === 535
-      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (mailResult.code === 'ETIMEDOUT' || mailResult.code === 'ECONNECTION' || mailResult.code === 'ESOCKET'
-          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
-          : (mailResult.code === 'ENOTFOUND'
-              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
-              : `Failed to deliver verification code to ${cleanEmail}: ${mailResult.error || 'SMTP delivery failure'}.`));
-
     return res.status(502).json({
       success: false,
-      message: cleanErrorMsg
+      message: `Failed to deliver verification code to ${cleanEmail}: ${mailResult.error || 'Email delivery failure'}.`
     });
   }
 
@@ -1152,15 +1120,15 @@ router.post('/verify-email-otp', (req, res) => {
 
 // GET /api/auth/email-service-status - Check email service connection health
 router.get('/email-service-status', async (req, res) => {
-  const status = await checkSmtpHealth();
+  const status = await checkResendHealth();
   res.json({
     success: status.connected,
-    gateway: status.provider || 'Google Gmail SMTP',
+    gateway: status.provider || 'Resend HTTPS API',
     ...status
   });
 });
 
-// POST /api/auth/test-email - Test sending a real email via Gmail SMTP
+// POST /api/auth/test-email - Test sending a real email via Resend API
 router.post('/test-email', async (req, res) => {
   const { to, subject, message } = req.body;
   if (!to || !to.includes('@')) {
@@ -1169,11 +1137,11 @@ router.post('/test-email', async (req, res) => {
 
   const result = await sendEmail({
     to: to.trim(),
-    subject: subject || '🍽️ MessConnect Gmail SMTP Test Verification',
+    subject: subject || '🍽️ MessConnect Resend HTTPS Test Verification',
     html: `
       <div style="font-family: sans-serif; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 480px;">
         <h2 style="color: #ea580c; margin-top: 0;">🍽️ MessConnect Real World Verification</h2>
-        <p>${message || 'This is a live test email sent via Google Gmail SMTP from your MessConnect platform.'}</p>
+        <p>${message || 'This is a live test email sent via Resend HTTPS API from your MessConnect platform.'}</p>
         <div style="background: #ffedd5; padding: 12px; border-radius: 8px; font-weight: bold; color: #9a3412;">
           Timestamp: ${new Date().toLocaleString()}
         </div>

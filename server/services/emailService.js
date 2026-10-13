@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const path = require('path');
 const dotenv = require('dotenv');
 
@@ -12,97 +12,40 @@ if (process.env.NODE_ENV === 'production') {
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 /**
- * Get Gmail SMTP configuration strictly from environment variables.
- * Gmail SMTP is the ONLY provider for OTP emails.
- * Never falls back to Brevo or unauthenticated relays.
+ * Get Resend API configuration strictly from environment variables.
+ * Resend HTTPS API is the primary provider for OTP and transactional emails.
+ * Never prints or logs the API key.
  */
-function getSmtpConfig() {
-  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = Number(process.env.SMTP_PORT || 587);
-  const secure = port === 465; // Port 587 uses STARTTLS (secure: false)
-  const user = (process.env.EMAIL_USER || process.env.GMAIL_USER || '').trim();
-  const pass = (process.env.EMAIL_PASS || process.env.GMAIL_APP_PASS || '')
-    .replace(/['"]/g, '')
-    .replace(/\s+/g, '');
+function getResendConfig() {
+  const apiKey = (process.env.RESEND_API_KEY || '').trim();
+  const fromEmail = (process.env.EMAIL_FROM || 'onboarding@resend.dev').trim();
+  const senderName = (process.env.EMAIL_SENDER_NAME || 'MessConnect Verification').trim();
 
   return {
-    host,
-    port,
-    secure,
-    user,
-    pass,
-    isConfigured: Boolean(user && pass)
+    apiKey,
+    fromEmail,
+    senderName,
+    isConfigured: Boolean(apiKey)
   };
 }
 
-/**
- * Build production-compatible Gmail SMTP Nodemailer transporter.
- * Uses port 587 with STARTTLS (or 465 if explicitly configured).
- */
-function createTransporter() {
-  const config = getSmtpConfig();
+let activeResendClient = null;
 
-  if (!config.isConfigured) {
-    console.warn('⚠️ [Gmail SMTP] EMAIL_USER or EMAIL_PASS environment variables are not set. OTP emails will fail until configured.');
+function getResendClient() {
+  const apiKey = (process.env.RESEND_API_KEY || '').trim();
+  if (!apiKey) return null;
+  if (!activeResendClient || activeResendClient.key !== apiKey) {
+    activeResendClient = new Resend(apiKey);
   }
-
-  const transporterOptions = {
-    host: config.host,
-    port: config.port,
-    secure: config.secure, // false for port 587
-    requireTLS: !config.secure, // Enforce STARTTLS when secure is false (port 587)
-    auth: {
-      user: config.user,
-      pass: config.pass
-    },
-    tls: {
-      rejectUnauthorized: false
-    },
-    connectionTimeout: 10000, // 10s connection timeout prevents long hangs on cloud firewalls
-    greetingTimeout: 10000,
-    socketTimeout: 15000
-  };
-
-  const transport = nodemailer.createTransport(transporterOptions);
-  console.log(`✉️ [Email Gateway] Configured via Google Gmail SMTP (${config.host}:${config.port}${!config.secure ? ' STARTTLS' : ' SSL'}) - Account: ${config.user || '(Not configured)'}`);
-  return transport;
+  return activeResendClient;
 }
-
-let activeTransporter = null;
-
-function getTransporter() {
-  if (!activeTransporter) {
-    activeTransporter = createTransporter();
-  }
-  return activeTransporter;
-}
-
-const SMTP_CONFIG = {
-  get host() {
-    return getSmtpConfig().host;
-  },
-  get port() {
-    return getSmtpConfig().port;
-  },
-  get secure() {
-    return getSmtpConfig().secure;
-  },
-  get auth() {
-    const config = getSmtpConfig();
-    return {
-      user: config.user,
-      pass: config.pass
-    };
-  }
-};
 
 const SENDER = {
   get name() {
-    return process.env.EMAIL_SENDER_NAME || 'MessConnect Verification';
+    return (process.env.EMAIL_SENDER_NAME || 'MessConnect Verification').trim();
   },
   get email() {
-    const config = getSmtpConfig();
-    return process.env.EMAIL_FROM || config.user || 'support@messconnect.in';
+    return (process.env.EMAIL_FROM || 'onboarding@resend.dev').trim();
   }
 };
 
@@ -123,136 +66,148 @@ function stripHtmlToPlainText(html) {
 }
 
 /**
- * Check connection health with Gmail SMTP
+ * Check connection and credentials health with Resend HTTPS API.
+ * Never exposes or logs the API key.
  */
-async function checkSmtpHealth() {
-  const config = getSmtpConfig();
+async function checkResendHealth() {
+  const config = getResendConfig();
 
   if (!config.isConfigured) {
     return {
       connected: false,
-      mode: 'GMAIL_SMTP',
-      provider: 'Google Gmail SMTP',
-      host: config.host,
-      port: config.port,
-      user: config.user || '(not configured)',
-      error: 'Missing Gmail SMTP credentials. Please set EMAIL_USER and EMAIL_PASS environment variables.',
+      mode: 'RESEND_API',
+      provider: 'Resend HTTPS API',
+      sender: config.fromEmail,
+      error: 'Missing RESEND_API_KEY environment variable. Please set RESEND_API_KEY in your server environment.',
       isConfigured: false
     };
   }
 
   try {
-    const t = getTransporter();
-    await t.verify();
+    const client = getResendClient();
+    const result = await client.domains.list();
+
+    if (result.error) {
+      const safeMsg = (result.error.message || 'Resend API authentication failed').replace(
+        new RegExp(config.apiKey, 'gi'),
+        '***'
+      );
+      console.error(`⚠️ [Resend Health Check Failed] Code: ${result.error.statusCode || 'N/A'} | Message: ${safeMsg}`);
+      return {
+        connected: false,
+        mode: 'RESEND_API',
+        provider: 'Resend HTTPS API',
+        sender: config.fromEmail,
+        error: safeMsg,
+        statusCode: result.error.statusCode || null,
+        isConfigured: true
+      };
+    }
+
     return {
       connected: true,
-      mode: 'GMAIL_SMTP',
-      provider: 'Google Gmail SMTP',
-      host: config.host,
-      port: config.port,
-      user: config.user,
-      message: `Gmail SMTP connection verified successfully (${config.host}:${config.port}${!config.secure ? ' STARTTLS' : ' SSL'}).`,
+      mode: 'RESEND_API',
+      provider: 'Resend HTTPS API',
+      sender: config.fromEmail,
+      message: 'Resend HTTPS API connection and credentials verified successfully.',
       isConfigured: true
     };
   } catch (err) {
-    const safeMsg = (err.message || 'SMTP connection verification failed').replace(
-      new RegExp(config.pass || '___impossible___', 'gi'),
+    const safeMsg = (err.message || 'Resend health check failed').replace(
+      new RegExp(config.apiKey || '___impossible___', 'gi'),
       '***'
     );
-
-    console.error(`⚠️ [Gmail SMTP Health Check Failed] Code: ${err.code || 'N/A'} | Message: ${safeMsg}`);
-
+    console.error(`⚠️ [Resend Health Check Exception] ${safeMsg}`);
     return {
       connected: false,
-      mode: 'GMAIL_SMTP',
-      provider: 'Google Gmail SMTP',
-      host: config.host,
-      port: config.port,
-      user: config.user,
+      mode: 'RESEND_API',
+      provider: 'Resend HTTPS API',
+      sender: config.fromEmail,
       error: safeMsg,
       code: err.code || null,
-      responseCode: err.responseCode || null,
       isConfigured: true
     };
   }
 }
 
 /**
- * Standard high-deliverability email delivery wrapper.
- * Strictly uses Gmail SMTP. NEVER falls back to Brevo or unauthenticated relays.
+ * Standard high-deliverability email delivery wrapper using Resend HTTPS API.
+ * Strictly uses Resend HTTPS API. Never prints or logs the API key.
  */
 async function sendEmail({ to, subject, html, text }) {
-  const config = getSmtpConfig();
+  const config = getResendConfig();
 
   if (!config.isConfigured) {
-    const errorMsg = 'Gmail SMTP is not configured. Missing EMAIL_USER or EMAIL_PASS environment variable.';
-    console.error(`❌ [Gmail SMTP Error] ${errorMsg}`);
+    console.error('❌ [Email Service Error] Transactional email service is not configured. Missing RESEND_API_KEY environment variable.');
     return {
       success: false,
-      error: errorMsg,
+      error: 'Transactional email service is not configured. Please set RESEND_API_KEY in your server environment.',
       code: 'EMISSINGCREDENTIALS',
-      mode: 'GMAIL_SMTP'
+      mode: 'RESEND_API'
     };
   }
 
+  const client = getResendClient();
   const plainText = text || stripHtmlToPlainText(html);
   const senderEmail = SENDER.email;
-
-  const mailOptions = {
-    from: `"${SENDER.name}" <${senderEmail}>`,
-    to,
-    replyTo: senderEmail,
-    subject,
-    text: plainText,
-    html,
-    headers: {
-      'Auto-Submitted': 'auto-generated',
-      'X-Auto-Response-Suppress': 'All',
-      'X-Entity-Ref-ID': `mc-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
-      'X-Mailer': 'MessConnect Transactional Engine'
-    }
-  };
+  const senderName = SENDER.name;
+  const fromFormatted = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
 
   try {
-    const t = getTransporter();
-    const info = await t.sendMail(mailOptions);
-    console.log(`✉️ [Gmail SMTP Delivered] Sent to: ${to} | Subject: "${subject}" | MessageId: ${info.messageId}`);
-    return {
-      success: true,
-      messageId: info.messageId,
-      accepted: info.accepted,
-      mode: 'GMAIL_SMTP'
-    };
-  } catch (err) {
-    // Sanitize any sensitive secrets from error message
-    const safeMsg = (err.message || 'SMTP delivery failure').replace(
-      new RegExp(config.pass || '___impossible___', 'gi'),
-      '***'
-    );
+    const response = await client.emails.send({
+      from: fromFormatted,
+      to: Array.isArray(to) ? to : [to],
+      subject,
+      html,
+      text: plainText,
+      headers: {
+        'Auto-Submitted': 'auto-generated',
+        'X-Auto-Response-Suppress': 'All',
+        'X-Entity-Ref-ID': `mc-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        'X-Mailer': 'MessConnect Transactional Engine (Resend HTTPS)'
+      }
+    });
 
-    console.error(`❌ [Gmail SMTP Delivery Error] Failed to send email to ${to}:`);
-    console.error(`   Error Code: ${err.code || 'N/A'} | Response Code: ${err.responseCode || 'N/A'}`);
-    console.error(`   Message: ${safeMsg}`);
+    if (response.error) {
+      const safeMsg = (response.error.message || 'Resend email delivery failed').replace(
+        new RegExp(config.apiKey, 'gi'),
+        '***'
+      );
+      console.error(`❌ [Resend Delivery Error] Failed to send email to ${to}: ${safeMsg} (Status: ${response.error.statusCode || 'N/A'})`);
 
-    // Contextual diagnostics without leaking credentials or secrets
-    if (err.code === 'EAUTH' || err.responseCode === 535) {
-      console.error(`👉 [SMTP Troubleshooting Hint] Gmail authentication failed (535 EAUTH).`);
-      console.error(`   1. Verify EMAIL_USER is your full Gmail address.`);
-      console.error(`   2. Verify EMAIL_PASS is a 16-character Google App Password (not your personal Google account password).`);
-      console.error(`   3. Verify 2-Step Verification is turned ON in Google Account settings.`);
-    } else if (err.code === 'ETIMEDOUT' || err.code === 'ECONNECTION' || err.code === 'ESOCKET') {
-      console.error(`👉 [SMTP Troubleshooting Hint] Connection to ${config.host}:${config.port} timed out (${err.code}).`);
-      console.error(`   Cloud hosting provider firewall may be blocking outbound port ${config.port}.`);
-    } else if (err.code === 'ENOTFOUND') {
-      console.error(`👉 [SMTP Troubleshooting Hint] DNS lookup failed for ${config.host}. Check server network configuration.`);
+      if (response.error.statusCode === 401 || response.error.name === 'validation_error') {
+        console.error('👉 [Resend Troubleshooting Hint] API key unauthorized or invalid. Verify RESEND_API_KEY environment variable.');
+      } else if (response.error.statusCode === 403) {
+        console.error('👉 [Resend Troubleshooting Hint] Domain restriction. When using onboarding@resend.dev, you can only send to your verified account email. Verify a custom domain at resend.com/domains for all recipients.');
+      }
+
+      return {
+        success: false,
+        error: safeMsg,
+        code: response.error.name || 'RESEND_ERROR',
+        statusCode: response.error.statusCode || null,
+        mode: 'RESEND_API'
+      };
     }
 
+    const messageId = response.data?.id;
+    console.log(`✉️ [Resend Delivered] Sent to: ${to} | Subject: "${subject}" | MessageId: ${messageId}`);
+    return {
+      success: true,
+      messageId,
+      mode: 'RESEND_API'
+    };
+  } catch (err) {
+    const safeMsg = (err.message || 'Resend delivery failure').replace(
+      new RegExp(config.apiKey || '___impossible___', 'gi'),
+      '***'
+    );
+    console.error(`❌ [Resend Delivery Exception] Failed to send email to ${to}: ${safeMsg}`);
     return {
       success: false,
       error: safeMsg,
-      code: err.code || null,
-      responseCode: err.responseCode || null,
-      mode: 'GMAIL_SMTP'
+      code: err.code || 'RESEND_EXCEPTION',
+      mode: 'RESEND_API'
     };
   }
 }
@@ -782,7 +737,7 @@ async function sendSupportQueryEmail({
   userId,
   userRole
 }) {
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER?.trim() || process.env.GMAIL_USER?.trim() || 'support@messconnect.in';
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_FROM || 'support@messconnect.in';
   const cleanName = name || 'MessConnect User';
   const cleanContact = contact || email || 'Not specified';
   const ticketId = 'MC-TKT-' + Date.now().toString().slice(-6);
@@ -875,13 +830,11 @@ ${message}
 }
 
 module.exports = {
-  get transporter() {
-    return getTransporter();
-  },
-  getTransporter,
-  SMTP_CONFIG,
+  getResendClient,
+  checkResendHealth,
+  checkSmtpHealth: checkResendHealth,
+  SMTP_CONFIG: null,
   SENDER,
-  checkSmtpHealth,
   sendEmail,
   sendPasswordResetOtp,
   sendVerificationOtp,
@@ -890,5 +843,5 @@ module.exports = {
   sendMessStatusEmail,
   sendMenuUpdateEmail,
   sendSupportQueryEmail,
-  getEmailGatewayMode: () => 'GMAIL_SMTP'
+  getEmailGatewayMode: () => 'RESEND_API'
 };

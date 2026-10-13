@@ -31,7 +31,7 @@ const supportRoutes = require('./routes/support');
 
 const db = require('./db/database');
 const { DB_CONFIG } = require('./db/mysql');
-const { SMTP_CONFIG, SENDER, checkSmtpHealth } = require('./services/emailService');
+const { SENDER, checkResendHealth } = require('./services/emailService');
 const { createPhase6Tables } = require('./db/createPhase6Tables');
 
 // Ensure Phase 6 MySQL tables exist
@@ -70,7 +70,7 @@ app.use('/api/contact', supportRoutes);
 
 // Health check
 app.get('/api/health', async (req, res) => {
-  const emailHealth = await checkSmtpHealth();
+  const emailHealth = await checkResendHealth();
   res.json({
     status: 'online',
     appName: 'MessConnect API',
@@ -82,11 +82,10 @@ app.get('/api/health', async (req, res) => {
       connected: db.mysqlConnected
     },
     emailGateway: {
-      provider: emailHealth.provider || (emailHealth.mode === 'GMAIL_SMTP' ? 'Google Gmail SMTP' : 'Custom SMTP'),
-      user: emailHealth.user,
+      provider: emailHealth.provider || 'Resend HTTPS API',
       sender: SENDER.email,
       connected: emailHealth.connected,
-      isIpUnauthorized: emailHealth.isIpUnauthorized || false
+      isConfigured: emailHealth.isConfigured
     },
     tagline: 'Find. Subscribe. Eat. Simplify.',
     timestamp: new Date().toISOString()
@@ -172,10 +171,8 @@ function startServer() {
   server.listen(PORT, () => {
     console.log(`\n======================================================`);
     console.log(`🚀 MessConnect Backend Server Running on http://localhost:${PORT}`);
-    const activeEmailUser = process.env.EMAIL_USER || process.env.GMAIL_USER || '(Not configured)';
-    const port = Number(process.env.SMTP_PORT || 587);
-    const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-    const emailGatewayDesc = `Google Gmail SMTP (${host}:${port} STARTTLS) - Account: ${activeEmailUser}`;
+    const activeSender = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+    const emailGatewayDesc = `Resend HTTPS API (api.resend.com) - Sender: ${activeSender}`;
     console.log(`✉️ Email Gateway: ${emailGatewayDesc}`);
     console.log(`   Healthcheck: http://localhost:${PORT}/api/health`);
     console.log(`   Tagline: "Find. Subscribe. Eat. Simplify."`);
