@@ -12,115 +12,63 @@ if (process.env.NODE_ENV === 'production') {
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 /**
- * Safely parse and normalize email credentials from environment variables.
- * Gmail SMTP credentials are read ONLY from environment variables (EMAIL_USER / EMAIL_PASS / GMAIL_USER / GMAIL_APP_PASS).
- * NEVER hardcodes credentials, passwords, or secrets.
+ * Get Gmail SMTP configuration strictly from environment variables.
+ * Gmail SMTP is the ONLY provider for OTP emails.
+ * Never falls back to Brevo or unauthenticated relays.
  */
-function getTransportConfig() {
-  const emailUser = (
-    process.env.EMAIL_USER ||
-    process.env.GMAIL_USER ||
-    process.env.SMTP_USER ||
-    ''
-  ).trim();
-
-  // Strip accidental whitespace or surrounding quotes commonly copied with Google App Passwords
-  const emailPass = (
-    process.env.EMAIL_PASS ||
-    process.env.GMAIL_APP_PASS ||
-    process.env.GMAIL_PASS ||
-    process.env.SMTP_PASS ||
-    process.env.EMAIL_PASSWORD ||
-    ''
-  ).replace(/['"]/g, '').replace(/\s+/g, '');
-
-  const explicitService = (process.env.EMAIL_SERVICE || '').toLowerCase();
-  const explicitHost = (process.env.EMAIL_HOST || process.env.SMTP_HOST || '').trim();
-  const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT || '465', 10);
-
-  // Check if Gmail SMTP should be used
-  const isGmail = Boolean(
-    explicitService === 'gmail' ||
-    explicitHost.toLowerCase().includes('gmail') ||
-    Boolean(process.env.GMAIL_USER) ||
-    Boolean(process.env.GMAIL_APP_PASS) ||
-    (emailUser && emailUser.toLowerCase().endsWith('@gmail.com')) ||
-    (emailUser && emailUser.toLowerCase().endsWith('@googlemail.com')) ||
-    (emailUser && emailPass && !process.env.BREVO_SMTP_KEY && !process.env.BREVO_SMTP_USER)
-  );
+function getSmtpConfig() {
+  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const port = Number(process.env.SMTP_PORT || 587);
+  const secure = port === 465; // Port 587 uses STARTTLS (secure: false)
+  const user = (process.env.EMAIL_USER || process.env.GMAIL_USER || '').trim();
+  const pass = (process.env.EMAIL_PASS || process.env.GMAIL_APP_PASS || '')
+    .replace(/['"]/g, '')
+    .replace(/\s+/g, '');
 
   return {
-    emailUser,
-    emailPass,
-    isGmail,
-    explicitHost,
-    port
+    host,
+    port,
+    secure,
+    user,
+    pass,
+    isConfigured: Boolean(user && pass)
   };
 }
 
 /**
- * Build production-compatible Nodemailer transporter
+ * Build production-compatible Gmail SMTP Nodemailer transporter.
+ * Uses port 587 with STARTTLS (or 465 if explicitly configured).
  */
 function createTransporter() {
-  const { emailUser, emailPass, isGmail, explicitHost, port } = getTransportConfig();
+  const config = getSmtpConfig();
 
-  if (isGmail) {
-    // If port 587 is explicitly requested (e.g., cloud hosting provider firewall blocking 465)
-    if (port === 587) {
-      return nodemailer.createTransport({
-        host: explicitHost || 'smtp.gmail.com',
-        port: 587,
-        secure: false, // Port 587 uses STARTTLS
-        auth: {
-          user: emailUser,
-          pass: emailPass
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 20000
-      });
-    }
-
-    // Default Gmail transport: Port 465 SSL via service: 'gmail'
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: emailUser,
-        pass: emailPass
-      },
-      tls: {
-        rejectUnauthorized: false
-      },
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 20000
-    });
+  if (!config.isConfigured) {
+    console.warn('⚠️ [Gmail SMTP] EMAIL_USER or EMAIL_PASS environment variables are not set. OTP emails will fail until configured.');
   }
 
-  // Fallback to custom SMTP / Brevo relay if configured
-  const smtpConfig = {
-    host: explicitHost || process.env.BREVO_SMTP_HOST || 'smtp-relay.brevo.com',
-    port: port || parseInt(process.env.BREVO_SMTP_PORT || '587', 10),
-    secure: port === 465,
+  const transporterOptions = {
+    host: config.host,
+    port: config.port,
+    secure: config.secure, // false for port 587
+    requireTLS: !config.secure, // Enforce STARTTLS when secure is false (port 587)
     auth: {
-      user: process.env.BREVO_SMTP_USER || emailUser || '',
-      pass: process.env.BREVO_SMTP_KEY || emailPass || ''
+      user: config.user,
+      pass: config.pass
     },
     tls: {
       rejectUnauthorized: false
     },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000
+    connectionTimeout: 10000, // 10s connection timeout prevents long hangs on cloud firewalls
+    greetingTimeout: 10000,
+    socketTimeout: 15000
   };
 
-  return nodemailer.createTransport(smtpConfig);
+  const transport = nodemailer.createTransport(transporterOptions);
+  console.log(`✉️ [Email Gateway] Configured via Google Gmail SMTP (${config.host}:${config.port}${!config.secure ? ' STARTTLS' : ' SSL'}) - Account: ${config.user || '(Not configured)'}`);
+  return transport;
 }
 
-let activeTransporter = createTransporter();
+let activeTransporter = null;
 
 function getTransporter() {
   if (!activeTransporter) {
@@ -131,22 +79,19 @@ function getTransporter() {
 
 const SMTP_CONFIG = {
   get host() {
-    const { isGmail, explicitHost } = getTransportConfig();
-    return explicitHost || (isGmail ? 'smtp.gmail.com' : (process.env.BREVO_SMTP_HOST || 'smtp-relay.brevo.com'));
+    return getSmtpConfig().host;
   },
   get port() {
-    const { port } = getTransportConfig();
-    return port;
+    return getSmtpConfig().port;
   },
   get secure() {
-    const { port } = getTransportConfig();
-    return port === 465;
+    return getSmtpConfig().secure;
   },
   get auth() {
-    const { emailUser, emailPass } = getTransportConfig();
+    const config = getSmtpConfig();
     return {
-      user: emailUser || process.env.BREVO_SMTP_USER || '',
-      pass: emailPass || process.env.BREVO_SMTP_KEY || ''
+      user: config.user,
+      pass: config.pass
     };
   }
 };
@@ -156,14 +101,8 @@ const SENDER = {
     return process.env.EMAIL_SENDER_NAME || 'MessConnect Verification';
   },
   get email() {
-    const { emailUser, isGmail } = getTransportConfig();
-    return (
-      process.env.EMAIL_FROM ||
-      (isGmail && emailUser ? emailUser : null) ||
-      process.env.BREVO_SENDER_EMAIL ||
-      emailUser ||
-      'no-reply@messconnect.in'
-    ).trim();
+    const config = getSmtpConfig();
+    return process.env.EMAIL_FROM || config.user || 'support@messconnect.in';
   }
 };
 
@@ -184,19 +123,21 @@ function stripHtmlToPlainText(html) {
 }
 
 /**
- * Check connection health with SMTP relay
+ * Check connection health with Gmail SMTP
  */
 async function checkSmtpHealth() {
-  const { emailUser, emailPass, isGmail } = getTransportConfig();
+  const config = getSmtpConfig();
 
-  if (!emailUser || !emailPass) {
+  if (!config.isConfigured) {
     return {
       connected: false,
-      mode: isGmail ? 'GMAIL_SMTP' : 'SMTP_RELAY',
-      provider: isGmail ? 'Google Gmail SMTP' : 'Custom SMTP',
-      user: emailUser || '(not configured)',
-      error: 'Missing email credentials. Set EMAIL_USER and EMAIL_PASS environment variables.',
-      isIpUnauthorized: false
+      mode: 'GMAIL_SMTP',
+      provider: 'Google Gmail SMTP',
+      host: config.host,
+      port: config.port,
+      user: config.user || '(not configured)',
+      error: 'Missing Gmail SMTP credentials. Please set EMAIL_USER and EMAIL_PASS environment variables.',
+      isConfigured: false
     };
   }
 
@@ -205,35 +146,55 @@ async function checkSmtpHealth() {
     await t.verify();
     return {
       connected: true,
-      mode: isGmail ? 'GMAIL_SMTP' : 'SMTP_RELAY',
-      provider: isGmail ? 'Google Gmail SMTP' : 'Custom SMTP',
-      user: emailUser,
-      message: `${isGmail ? 'Gmail' : 'SMTP'} connection verified successfully.`
+      mode: 'GMAIL_SMTP',
+      provider: 'Google Gmail SMTP',
+      host: config.host,
+      port: config.port,
+      user: config.user,
+      message: `Gmail SMTP connection verified successfully (${config.host}:${config.port}${!config.secure ? ' STARTTLS' : ' SSL'}).`,
+      isConfigured: true
     };
   } catch (err) {
-    // Sanitize any password occurrences in error message
     const safeMsg = (err.message || 'SMTP connection verification failed').replace(
-      new RegExp(emailPass || '___impossible___', 'gi'),
+      new RegExp(config.pass || '___impossible___', 'gi'),
       '***'
     );
-    console.error(`⚠️ [SMTP Health Check Failed] ${err.code || ''} ${safeMsg}`);
+
+    console.error(`⚠️ [Gmail SMTP Health Check Failed] Code: ${err.code || 'N/A'} | Message: ${safeMsg}`);
+
     return {
       connected: false,
-      mode: isGmail ? 'GMAIL_SMTP' : 'SMTP_RELAY',
-      provider: isGmail ? 'Google Gmail SMTP' : 'Custom SMTP',
-      user: emailUser,
+      mode: 'GMAIL_SMTP',
+      provider: 'Google Gmail SMTP',
+      host: config.host,
+      port: config.port,
+      user: config.user,
       error: safeMsg,
       code: err.code || null,
-      isIpUnauthorized: safeMsg.includes('525') || safeMsg.includes('Unauthorized IP')
+      responseCode: err.responseCode || null,
+      isConfigured: true
     };
   }
 }
 
 /**
- * Standard high-deliverability email delivery wrapper
+ * Standard high-deliverability email delivery wrapper.
+ * Strictly uses Gmail SMTP. NEVER falls back to Brevo or unauthenticated relays.
  */
 async function sendEmail({ to, subject, html, text }) {
-  const { emailUser, emailPass, isGmail } = getTransportConfig();
+  const config = getSmtpConfig();
+
+  if (!config.isConfigured) {
+    const errorMsg = 'Gmail SMTP is not configured. Missing EMAIL_USER or EMAIL_PASS environment variable.';
+    console.error(`❌ [Gmail SMTP Error] ${errorMsg}`);
+    return {
+      success: false,
+      error: errorMsg,
+      code: 'EMISSINGCREDENTIALS',
+      mode: 'GMAIL_SMTP'
+    };
+  }
+
   const plainText = text || stripHtmlToPlainText(html);
   const senderEmail = SENDER.email;
 
@@ -255,38 +216,35 @@ async function sendEmail({ to, subject, html, text }) {
   try {
     const t = getTransporter();
     const info = await t.sendMail(mailOptions);
-    console.log(`✉️ [Email Delivered] Sent to: ${to} | Subject: "${subject}" | MessageId: ${info.messageId}`);
+    console.log(`✉️ [Gmail SMTP Delivered] Sent to: ${to} | Subject: "${subject}" | MessageId: ${info.messageId}`);
     return {
       success: true,
       messageId: info.messageId,
       accepted: info.accepted,
-      mode: isGmail ? 'GMAIL_SMTP' : 'SMTP_RELAY'
+      mode: 'GMAIL_SMTP'
     };
   } catch (err) {
     // Sanitize any sensitive secrets from error message
     const safeMsg = (err.message || 'SMTP delivery failure').replace(
-      new RegExp(emailPass || '___impossible___', 'gi'),
+      new RegExp(config.pass || '___impossible___', 'gi'),
       '***'
     );
 
-    console.error(`❌ [SMTP Delivery Error] Failed to send email to ${to}:`);
+    console.error(`❌ [Gmail SMTP Delivery Error] Failed to send email to ${to}:`);
     console.error(`   Error Code: ${err.code || 'N/A'} | Response Code: ${err.responseCode || 'N/A'}`);
     console.error(`   Message: ${safeMsg}`);
 
-    // Contextual hints without leaking credentials
+    // Contextual diagnostics without leaking credentials or secrets
     if (err.code === 'EAUTH' || err.responseCode === 535) {
       console.error(`👉 [SMTP Troubleshooting Hint] Gmail authentication failed (535 EAUTH).`);
-      console.error(`   1. Ensure EMAIL_USER (or GMAIL_USER) is your full Gmail address.`);
-      console.error(`   2. Ensure EMAIL_PASS (or GMAIL_APP_PASS) is a 16-character Google App Password (not your normal Google account password).`);
+      console.error(`   1. Verify EMAIL_USER is your full Gmail address.`);
+      console.error(`   2. Verify EMAIL_PASS is a 16-character Google App Password (not your personal Google account password).`);
       console.error(`   3. Verify 2-Step Verification is turned ON in Google Account settings.`);
-    } else if (err.code === 'ETIMEDOUT' || err.code === 'ESOCKET' || err.code === 'ECONNECTION') {
-      console.error(`👉 [SMTP Troubleshooting Hint] Connection timed out (${err.code}).`);
-      console.error(`   Cloud host firewall may be blocking outbound port. Try setting SMTP_PORT=587 in environment variables.`);
-    }
-
-    const isIpRestricted = !isGmail && (safeMsg.includes('525') || safeMsg.includes('Unauthorized IP'));
-    if (isIpRestricted) {
-      console.error(`🚨 [Brevo SMTP Delivery FAILED] 525 5.7.1 Unauthorized IP address.`);
+    } else if (err.code === 'ETIMEDOUT' || err.code === 'ECONNECTION' || err.code === 'ESOCKET') {
+      console.error(`👉 [SMTP Troubleshooting Hint] Connection to ${config.host}:${config.port} timed out (${err.code}).`);
+      console.error(`   Cloud hosting provider firewall may be blocking outbound port ${config.port}.`);
+    } else if (err.code === 'ENOTFOUND') {
+      console.error(`👉 [SMTP Troubleshooting Hint] DNS lookup failed for ${config.host}. Check server network configuration.`);
     }
 
     return {
@@ -294,7 +252,7 @@ async function sendEmail({ to, subject, html, text }) {
       error: safeMsg,
       code: err.code || null,
       responseCode: err.responseCode || null,
-      isIpRestricted
+      mode: 'GMAIL_SMTP'
     };
   }
 }
@@ -932,8 +890,5 @@ module.exports = {
   sendMessStatusEmail,
   sendMenuUpdateEmail,
   sendSupportQueryEmail,
-  getEmailGatewayMode: () => {
-    const { isGmail } = getTransportConfig();
-    return isGmail ? 'GMAIL_SMTP' : 'SMTP_RELAY';
-  }
+  getEmailGatewayMode: () => 'GMAIL_SMTP'
 };

@@ -372,7 +372,7 @@ function createAccountAndMess(data) {
   db.data.users.push(newUser);
   db.save();
 
-  // Send real Welcome email via Brevo
+  // Send Welcome email via Gmail SMTP
   sendWelcomeEmail({
     email: cleanEmail,
     name: newUser.name,
@@ -458,19 +458,13 @@ router.post('/register-send-otp', async (req, res) => {
   });
 
   if (!emailResult.success) {
-    if (emailResult.isIpRestricted) {
-      return res.status(502).json({
-        success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
-        isIpRestricted: true
-      });
-    }
-
-    const cleanErrorMsg = emailResult.code === 'EAUTH'
-      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (emailResult.code === 'ETIMEDOUT'
-          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
-          : `Failed to deliver verification code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`);
+    const cleanErrorMsg = emailResult.code === 'EAUTH' || emailResult.responseCode === 535
+      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (emailResult.code === 'ETIMEDOUT' || emailResult.code === 'ECONNECTION' || emailResult.code === 'ESOCKET'
+          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
+          : (emailResult.code === 'ENOTFOUND'
+              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
+              : `Failed to deliver verification code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`));
 
     return res.status(502).json({
       success: false,
@@ -645,19 +639,13 @@ router.post('/owner-request-login-otp', async (req, res) => {
   });
 
   if (!emailResult.success) {
-    if (emailResult.isIpRestricted) {
-      return res.status(502).json({
-        success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
-        isIpRestricted: true
-      });
-    }
-
-    const cleanErrorMsg = emailResult.code === 'EAUTH'
-      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (emailResult.code === 'ETIMEDOUT'
-          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
-          : `Failed to deliver login code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`);
+    const cleanErrorMsg = emailResult.code === 'EAUTH' || emailResult.responseCode === 535
+      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (emailResult.code === 'ETIMEDOUT' || emailResult.code === 'ECONNECTION' || emailResult.code === 'ESOCKET'
+          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
+          : (emailResult.code === 'ENOTFOUND'
+              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
+              : `Failed to deliver login code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`));
 
     return res.status(502).json({
       success: false,
@@ -774,19 +762,13 @@ router.post('/forgot-password', async (req, res) => {
   const emailResult = await sendPasswordResetOtp({ email: cleanEmail, name: user.name, otp });
 
   if (!emailResult.success) {
-    if (emailResult.isIpRestricted) {
-      return res.status(502).json({
-        success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
-        isIpRestricted: true
-      });
-    }
-
-    const cleanErrorMsg = emailResult.code === 'EAUTH'
-      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (emailResult.code === 'ETIMEDOUT'
-          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
-          : `Failed to deliver password reset code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`);
+    const cleanErrorMsg = emailResult.code === 'EAUTH' || emailResult.responseCode === 535
+      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (emailResult.code === 'ETIMEDOUT' || emailResult.code === 'ECONNECTION' || emailResult.code === 'ESOCKET'
+          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
+          : (emailResult.code === 'ENOTFOUND'
+              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
+              : `Failed to deliver password reset code to ${cleanEmail}: ${emailResult.error || 'SMTP delivery failure'}.`));
 
     return res.status(502).json({
       success: false,
@@ -1106,19 +1088,13 @@ router.post('/send-verification-otp', async (req, res) => {
   });
 
   if (!mailResult.success) {
-    if (mailResult.isIpRestricted) {
-      return res.status(502).json({
-        success: false,
-        message: `Email delivery blocked by Brevo (525 Unauthorized IP address). To fix: In your Brevo account, go to Settings -> Security -> Authorized IPs and click "Deactivate".`,
-        isIpRestricted: true
-      });
-    }
-
-    const cleanErrorMsg = mailResult.code === 'EAUTH'
-      ? 'Email service authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
-      : (mailResult.code === 'ETIMEDOUT'
-          ? 'Email server connection timed out. Please check server outbound SMTP connectivity.'
-          : `Failed to deliver verification code to ${cleanEmail}: ${mailResult.error || 'SMTP delivery failure'}.`);
+    const cleanErrorMsg = mailResult.code === 'EAUTH' || mailResult.responseCode === 535
+      ? 'Gmail authentication failed. Please verify EMAIL_USER and EMAIL_PASS (Google App Password) in your server environment.'
+      : (mailResult.code === 'ETIMEDOUT' || mailResult.code === 'ECONNECTION' || mailResult.code === 'ESOCKET'
+          ? 'Gmail SMTP connection timed out. Outbound SMTP port 587 may be blocked by your hosting provider.'
+          : (mailResult.code === 'ENOTFOUND'
+              ? 'DNS resolution failed for smtp.gmail.com. Check server network settings.'
+              : `Failed to deliver verification code to ${cleanEmail}: ${mailResult.error || 'SMTP delivery failure'}.`));
 
     return res.status(502).json({
       success: false,
@@ -1179,12 +1155,12 @@ router.get('/email-service-status', async (req, res) => {
   const status = await checkSmtpHealth();
   res.json({
     success: status.connected,
-    gateway: status.provider || (status.mode === 'GMAIL_SMTP' ? 'Google Gmail SMTP' : 'Custom SMTP'),
+    gateway: status.provider || 'Google Gmail SMTP',
     ...status
   });
 });
 
-// POST /api/auth/test-email - Test sending a real email via Brevo
+// POST /api/auth/test-email - Test sending a real email via Gmail SMTP
 router.post('/test-email', async (req, res) => {
   const { to, subject, message } = req.body;
   if (!to || !to.includes('@')) {
@@ -1193,11 +1169,11 @@ router.post('/test-email', async (req, res) => {
 
   const result = await sendEmail({
     to: to.trim(),
-    subject: subject || '🍽️ MessConnect Brevo Test Verification',
+    subject: subject || '🍽️ MessConnect Gmail SMTP Test Verification',
     html: `
       <div style="font-family: sans-serif; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 480px;">
         <h2 style="color: #ea580c; margin-top: 0;">🍽️ MessConnect Real World Verification</h2>
-        <p>${message || 'This is a live test email sent via Brevo SMTP Relay from your MessConnect platform.'}</p>
+        <p>${message || 'This is a live test email sent via Google Gmail SMTP from your MessConnect platform.'}</p>
         <div style="background: #ffedd5; padding: 12px; border-radius: 8px; font-weight: bold; color: #9a3412;">
           Timestamp: ${new Date().toLocaleString()}
         </div>

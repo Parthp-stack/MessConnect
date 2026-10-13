@@ -361,7 +361,7 @@ router.post('/verifications/:id/decision', (req, res) => {
   console.log(`[Admin Notification] Simulated SMS to ${owner?.phone || (mess && mess.phone)}: ${simulatedSms}`);
   console.log(`[Admin Notification] Email notification triggered for ${owner?.email || (mess && mess.email)}`);
 
-  // Send real status email to mess owner via Brevo (safe & non-blocking)
+  // Send real status email to mess owner via Gmail SMTP (safe & non-blocking)
   const targetEmail = owner?.email || (mess && mess.email);
   if (targetEmail) {
     try {
@@ -372,7 +372,7 @@ router.post('/verifications/:id/decision', (req, res) => {
         status: decision === 'APPROVE' ? 'APPROVED' : (decision === 'REJECT' ? 'REJECTED' : 'CHANGES_REQUESTED'),
         reviewNotes: (mess && mess.reviewNotes) || (owner && owner.reviewNotes)
       }).catch(err => {
-        console.warn(`⚠️ [Admin Email] Brevo email notice for ${targetEmail}:`, err.message);
+        console.warn(`⚠️ [Admin Email] Email notice for ${targetEmail}:`, err.message);
       });
     } catch (err) {
       console.warn(`⚠️ [Admin Email] Error dispatching email:`, err.message);
@@ -386,7 +386,7 @@ router.post('/verifications/:id/decision', (req, res) => {
     notification: {
       sms: simulatedSms,
       email: simulatedEmail,
-      gateway: 'BREVO_SMTP'
+      gateway: 'GMAIL_SMTP'
     }
   });
 });

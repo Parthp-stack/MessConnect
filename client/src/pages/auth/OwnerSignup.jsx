@@ -768,12 +768,12 @@ export const OwnerSignup = ({
           {/* STEP 2: Enter 6-Digit OTP with 3-Minute Expiration */}
           {step === 'OTP' && (
             <form onSubmit={handleVerifyOtp} className="space-y-5 animate-in fade-in duration-200">
-              {/* Brevo Real Verification Notice */}
+              {/* Verification Notice */}
               <div className="p-4 rounded-2xl bg-amber-950/70 border border-amber-800 text-amber-200 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-bold flex items-center gap-1.5 text-amber-300">
                     <Mail className="w-4 h-4 text-orange-400" />
-                    Verification Code Sent via Brevo
+                    Verification Code Sent to Email
                   </span>
                   <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-mono font-bold text-[11px] ${
                     timeLeft <= 30 ? 'bg-rose-950 text-rose-300 border border-rose-700 animate-pulse' : 'bg-slate-950 text-amber-300 border border-amber-700/60'

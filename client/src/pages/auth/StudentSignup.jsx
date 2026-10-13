@@ -382,12 +382,12 @@ export const StudentSignup = ({
           {step === 'OTP' && (
             <form onSubmit={handleVerifyOtp} className="space-y-5 animate-in fade-in duration-200">
               
-              {/* Brevo Real Verification Notice */}
+              {/* Verification Notice */}
               <div className="p-4 rounded-2xl bg-orange-50 border border-orange-200 text-orange-900 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-bold flex items-center gap-1.5">
                     <Mail className="w-4 h-4 text-orange-600" />
-                    Verification Code Sent via Brevo
+                    Verification Code Sent to Email
                   </span>
                   <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-mono font-bold text-[11px] ${
                     timeLeft <= 30 ? 'bg-rose-100 text-rose-700 animate-pulse' : 'bg-amber-100 text-amber-800'

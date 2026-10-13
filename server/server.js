@@ -172,11 +172,10 @@ function startServer() {
   server.listen(PORT, () => {
     console.log(`\n======================================================`);
     console.log(`🚀 MessConnect Backend Server Running on http://localhost:${PORT}`);
-    const activeEmailUser = process.env.EMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER;
-    const isGmailService = Boolean(activeEmailUser && (activeEmailUser.includes('gmail') || process.env.EMAIL_SERVICE === 'gmail' || process.env.GMAIL_APP_PASS || process.env.EMAIL_PASS));
-    const emailGatewayDesc = isGmailService
-      ? `Google Gmail SMTP (${activeEmailUser})`
-      : `SMTP on ${SMTP_CONFIG.host}:${SMTP_CONFIG.port} (${SMTP_CONFIG.auth.user || 'None'})`;
+    const activeEmailUser = process.env.EMAIL_USER || process.env.GMAIL_USER || '(Not configured)';
+    const port = Number(process.env.SMTP_PORT || 587);
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+    const emailGatewayDesc = `Google Gmail SMTP (${host}:${port} STARTTLS) - Account: ${activeEmailUser}`;
     console.log(`✉️ Email Gateway: ${emailGatewayDesc}`);
     console.log(`   Healthcheck: http://localhost:${PORT}/api/health`);
     console.log(`   Tagline: "Find. Subscribe. Eat. Simplify."`);

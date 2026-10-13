@@ -256,7 +256,7 @@ export const OwnerLogin = ({
                   <div className="p-3 rounded-xl bg-orange-950/40 border border-orange-800/50 text-[11px] text-orange-200 flex items-start gap-2">
                     <Sparkles className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Anytime Partner Access:</strong> Enter your registered mess email or phone number. We'll send a 6-digit authentication code to your email via Brevo, valid for <strong>3 minutes</strong>.
+                      <strong>Anytime Partner Access:</strong> Enter your registered mess email or phone number. We'll send a 6-digit authentication code to your registered email, valid for <strong>3 minutes</strong>.
                     </span>
                   </div>
 
@@ -291,12 +291,12 @@ export const OwnerLogin = ({
               {/* OTP Step 2: Enter 6-Digit Code */}
               {otpStep === 'VERIFY' && (
                 <form onSubmit={handleVerifyLoginOtp} className="space-y-4 animate-in fade-in duration-200">
-                  {/* Brevo Real Delivery Notice & 3-Min Timer */}
+                  {/* Delivery Notice & 3-Min Timer */}
                   <div className="p-4 rounded-2xl bg-amber-950/70 border border-amber-800 text-amber-200 text-xs">
                     <div className="flex items-center justify-between">
                       <span className="font-bold flex items-center gap-1.5 text-amber-300">
                         <Mail className="w-4 h-4 text-orange-400" />
-                        Login OTP Sent via Brevo
+                        Login Code Sent to Email
                       </span>
                       <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-mono font-bold text-[11px] ${
                         timeLeft <= 30 ? 'bg-rose-950 text-rose-300 border border-rose-700 animate-pulse' : 'bg-slate-950 text-amber-300 border border-amber-700/60'
